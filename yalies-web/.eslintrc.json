@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "rules": {
+    "quotes": ["error", "double"],
+    "indent": ["error", "tab"]
+  }
+}
