@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@/hooks/authContext";
+import useAuth from "@/hooks/useAuth";
 
 export default function PeopleGrid() {
-	const {token} = useAuth();
-
-	console.log(token);
+	const {getToken} = useAuth();
 	
+	console.log(getToken());
+
 	return (
 		<p>People grid</p>
 	);

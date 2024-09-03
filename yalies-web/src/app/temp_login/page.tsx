@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import Button from "@/components/Button";
 import Link from "next/link.js";
 import { useSearchParams } from "next/navigation.js";
 import { useEffect } from "react";
-import { useAuth } from "@/hooks/authContext";
+import useAuth from "@/hooks/useAuth";
 
 export default function APIPage() {
 	const searchParams = useSearchParams();
@@ -22,7 +22,6 @@ export default function APIPage() {
 	}
 
 	const thisUrlEncoded = encodeURIComponent(window.location.toString());
-	console.log(thisUrlEncoded)
 	const redirectUrl = `http://localhost:5000/UNSAFE_login_3rd_party?redir=${thisUrlEncoded}`;
 	return (
 		<>
