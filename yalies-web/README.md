@@ -1,8 +1,7 @@
 ## Getting Started
-
-```bash
-npm run dev
-```
+-  `npm install`
+- `cp .env.template .env`, fill in the values
+- `npm run dev` to start the development server
 
 ## Notes
 - This app uses the [Next.js](https://nextjs.org/) framework.

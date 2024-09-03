@@ -1,0 +1,38 @@
+{
+  "name": "yalies-backend",
+  "version": "2.0.0",
+  "description": "Yale people directory",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "npx tsc && node build/index.js",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yalies/Yalies.git"
+  },
+  "keywords": [
+    "Yale"
+  ],
+  "author": "Erik Boesen, Yale Computer Society",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yalies/Yalies/issues"
+  },
+  "homepage": "https://github.com/Yalies/Yalies#readme",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.9.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/express-session": "^1.18.0",
+    "typescript": "^5.5.4"
+  }
+}
