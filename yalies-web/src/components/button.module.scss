@@ -1,0 +1,12 @@
+@use "../shared.scss";
+
+.button {
+    font-family: inherit;
+    color: shared.$accent-color;
+    border-radius: 50px;
+    outline: 0;
+    padding: 10px 12px;
+    border: none;
+    background: none;
+	box-shadow: 0 0 4px rgba(0, 21, 42, 0.2);
+}

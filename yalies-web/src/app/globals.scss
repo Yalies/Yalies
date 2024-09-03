@@ -1,0 +1,11 @@
+@use "../_shared.scss";
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: shared.$accent-color;
+    background-color: shared.$background-color;
+}

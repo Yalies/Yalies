@@ -1,0 +1,27 @@
+@use "../shared.scss";
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    a {
+        color: shared.$accent-color;
+        text-decoration: none;
+    }
+    #logo {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
+        h2 {
+            font-weight: 600;
+            font-size: 40px;
+        }
+    }
+    #links {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+}
