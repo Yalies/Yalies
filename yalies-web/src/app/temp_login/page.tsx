@@ -22,7 +22,7 @@ export default function APIPage() {
 	}
 
 	const thisUrlEncoded = encodeURIComponent(window.location.toString());
-	const redirectUrl = `http://localhost:5000/UNSAFE_login_3rd_party?redir=${thisUrlEncoded}`;
+	const redirectUrl = `${process.env.NEXT_PUBLIC_YALIES_API_URL}/UNSAFE_login_3rd_party?redir=${thisUrlEncoded}`;
 	return (
 		<>
 			<p>This is a temporary solution to get a cookie from the v1 Yalies backend.</p>
