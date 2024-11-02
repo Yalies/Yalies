@@ -1,5 +1,6 @@
 ## Getting Started
--  `npm install`
+- `nvm use`
+- `npm install`
 - `cp .env.template .env`, fill in the values
 - Check out the `v2-auth` branch on the original Yalies repo. Start the Python program.
 - `npm run dev` to start the development server

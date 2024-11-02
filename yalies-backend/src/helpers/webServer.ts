@@ -1,6 +1,6 @@
 import express, { Express } from "express";
-import session from "express-session";
 import PingPongRouter from "./routes/pingPongRoute.js";
+import PeopleRouter from "./routes/peopleRoute.js";
 
 export default class WebServer {
 	#app: Express;
@@ -21,6 +21,9 @@ export default class WebServer {
 	initializeSubRouters = () => {
 		const pingPongRouter = new PingPongRouter();
 		this.#app.use("/ping", pingPongRouter.getRouter());
+		
+		const peopleRouter = new PeopleRouter();
+		this.#app.use("/people", peopleRouter.getRouter());
 	}
 
 	serve = () => {
