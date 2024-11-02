@@ -1,6 +1,9 @@
 import express, { Express } from "express";
-import PingPongRouter from "./routes/pingPongRoute.js";
-import PeopleRouter from "./routes/peopleRoute.js";
+import PingPongRouter from "./routes/pingPongRouter.js";
+import PeopleRouter from "./routes/peopleRouter.js";
+import CasRouter from "./routes/casRouter.js";
+import passport from "passport";
+import session from "express-session";
 
 export default class WebServer {
 	#app: Express;
@@ -16,6 +19,22 @@ export default class WebServer {
 		this.#app.set("trust proxy", 1);
 		this.#app.use(express.json());
 		this.#app.use(express.urlencoded({ extended: true }));
+		this.#app.use(session({
+			secret: process.env.SESSION_SECRET,
+			resave: false,
+			saveUninitialized: true,
+			cookie: { 
+				httpOnly: true,
+				// Restrict to HTTPS only in prod
+				secure: process.env.NODE_ENV !== "development",
+				// 400 days, the max age that Chrome supports
+				maxAge: 34560000,
+			},
+			// TODO: You can add a `store` option here to commit sessions
+			// to a database. Add this once the DB is set up
+		}));
+		this.#app.use(passport.initialize());
+		this.#app.use(passport.session());
 	};
 
 	initializeSubRouters = () => {
@@ -24,6 +43,9 @@ export default class WebServer {
 		
 		const peopleRouter = new PeopleRouter();
 		this.#app.use("/people", peopleRouter.getRouter());
+		
+		const casRouter = new CasRouter();
+		this.#app.use("/login", casRouter.getRouter());
 	}
 
 	serve = () => {

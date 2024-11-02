@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 
-export default class PingPongRoute {
+export default class PingPongRouter {
 	getRouter = () => {
 		const router = express.Router();
 		router.get("/", this.pingPong);

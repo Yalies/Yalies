@@ -1,9 +1,10 @@
 import express, {Request, Response} from "express";
+import CAS from "../cas.js";
 
 export default class PeopleRouter {
 	getRouter = () => {
 		const router = express.Router();
-		router.get("/", this.getPeople);
+		router.get("/", CAS.requireAuthentication, this.getPeople);
 		return router;
 	}
 
