@@ -46,11 +46,11 @@ export default class WebServer {
 		
 		const casRouter = new CasRouter();
 		this.#app.use("/login", casRouter.getRouter());
-	}
+	};
 
 	serve = () => {
 		this.#app.listen(process.env.PORT, () => {
 			console.log(`App running on port ${process.env.PORT}`);
-		})
-	}
+		});
+	};
 }
