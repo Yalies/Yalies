@@ -29,7 +29,10 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "passport": "^0.7.0",
-    "passport-cas": "github:coursetable/passport-cas"
+    "passport-cas": "github:coursetable/passport-cas",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin-js": "^2.10.1",
@@ -39,6 +42,7 @@
     "@types/passport-strategy": "^0.2.38",
     "eslint": "^8.57.0",
     "eslint-plugin-github": "^5.0.1",
+    "sqlite3": "^5.1.7",
     "typescript": "^5.5.4"
   }
 }

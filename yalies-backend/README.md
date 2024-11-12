@@ -5,6 +5,22 @@
 - `npm install`
 - `cp .env.template .env`, fill in the values
 
+## Breaking API changes from V1
+- `/people` fields: `residence`, `building_code`, `entryway`, `floor`, `suite`, `room` removed because they are no longer exposed by the Yale Face Book
+- `/people` field `birthday` removed because it is redundant and locale-specific
+- `/people` fields `college`, `school`, and `organization` removed in favor of `college_code`, `school_code`, and `organization_code`
+
+## SQL details
+- We're using `sequelize` library to interact with the database
+- Right now, we're using SQLite for development and Postgres for production.
+	- SQLite is hosted on your local machine, in a file
+	- Postgres is hosted on Heroku (which uses AWS behind the scenes)
+	- We're planning on migrating our deployment stack to Google Cloud, which uses SQLite. Luckily, sequelize is sql-agnostic
+- Each model is stored in `src/helpers/models`
+	- Each model is defined as a TypeScript class
+	- Models are registered with sequelize, which forms a connection between the class and a table in the database
+	- Static methods on the model classes can be called to query/update
+
 ## CAS details
 - **passport**: a library that integrates authentication in Express
 - **passport-cas**: a custom strategy for passport. Passport supports google, twitter, etc authentication, but these people made a custom one that supports CAS
