@@ -4,6 +4,7 @@ import PeopleRouter from "./routes/peopleRouter.js";
 import CasRouter from "./routes/casRouter.js";
 import passport from "passport";
 import session from "express-session";
+import cors from "cors";
 
 export default class WebServer {
 	#app: Express;
@@ -17,6 +18,7 @@ export default class WebServer {
 	initializeExpress = () => {
 		this.#app = express();
 		this.#app.set("trust proxy", 1);
+		this.#app.use(cors({ credentials: true, origin: true }));
 		this.#app.use(express.json());
 		this.#app.use(express.urlencoded({ extended: true }));
 		this.#app.use(session({
@@ -39,13 +41,13 @@ export default class WebServer {
 
 	initializeSubRouters = () => {
 		const pingPongRouter = new PingPongRouter();
-		this.#app.use("/ping", pingPongRouter.getRouter());
+		this.#app.use("/api/ping", pingPongRouter.getRouter());
 		
 		const peopleRouter = new PeopleRouter();
-		this.#app.use("/people", peopleRouter.getRouter());
+		this.#app.use("/api/people", peopleRouter.getRouter());
 		
 		const casRouter = new CasRouter();
-		this.#app.use("/login", casRouter.getRouter());
+		this.#app.use("/api/login", casRouter.getRouter());
 	};
 
 	serve = () => {

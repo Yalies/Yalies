@@ -1,5 +1,5 @@
-import {createContext, useCallback, useContext, useEffect, useState} from "react";
-import {getCookie, setCookie} from "cookies-next";
+import { useCallback } from "react";
+import { getCookie, setCookie } from "cookies-next";
 
 const useAuth = () => {
 	const saveToken = useCallback((token: string | null) => {

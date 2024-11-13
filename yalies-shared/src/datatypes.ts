@@ -24,31 +24,21 @@ export type Person = {
 
     // Students
     school_code?: string;
-    school?: string;
     year?: number;
     curriculum?: string;
     
     // Undergrads
-    college?: string;
     college_code?: string;
     leave?: boolean;
     visitor?: boolean;
     image?: string;
-    birthday?: string;
     birth_month?: number;
     birth_day?: number;
-    residence?: string;
-    building_code?: string;
-    entryway?: string;
-    floor?: number;
-    suite?: number;
-    room?: string;
     major?: string;
     access_code?: string;
 
     // Staff
     organization_code?: string;
-    organization?: string;
     unit_class?: string;
     unit_code?: string;
     unit?: string;

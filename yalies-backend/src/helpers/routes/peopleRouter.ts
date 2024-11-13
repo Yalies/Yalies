@@ -1,38 +1,29 @@
 import express, {Request, Response} from "express";
-import Person from "../models/Person.js";
+import PersonModel from "../models/PersonModel.js";
 
 export default class PeopleRouter {
 	getRouter = () => {
 		const router = express.Router();
 		// router.get("/", CAS.requireAuthentication, this.getPeople);
-		router.get("/", this.getPeople);
+		router.post("/", this.getPeople);
 		return router;
 	};
 
 	getPeople = async (req: Request, res: Response) => {
-		let people: Person[];
+		let people: PersonModel[];
 		try {
-			people = await Person.findAll({
+			people = await PersonModel.findAll({
 				where: {
-					netid: "emy8",
+					school_code: "YC",
 				},
-				// attributes: [ "netid", "upi" ],
+				limit: 100,
 			});
 		} catch(e) {
 			console.error(e);
 			res.status(500).send("Error fetching people");
 			return;
 		}
-		console.log(people[0].upi);
-		res.json([
-			{
-				name: "Eric",
-				college: "TC",
-			},
-			{
-				name: "Patrick",
-				college: "PM",
-			},
-		]);
+		const json = people.map((person) => person.toSanitizedObject());
+		res.status(200).json(json);
 	};
 };
