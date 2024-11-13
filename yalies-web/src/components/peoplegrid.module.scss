@@ -3,13 +3,15 @@
 #people_grid {
     margin-top: 15px;
     .person {
-        width: 3in;
+        width: 3.3in;
         display: inline-block;
         vertical-align: top;
         text-align: left;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        margin-right: 150px;
+		margin: 30px 15px 0 0;
+		background-color: #f5f5f5;
+		border-radius: 10px;
+		padding: 20px;
+		color: #000;
 
         .info_box {
             display: flex;
@@ -45,24 +47,24 @@
             }
         }
         .pills {
-            margin: 5px 0px 4px -1px;
-            
-            .pill, .pill_metadata {
+			padding: 20px 0 0 0;
+			.pill, .pill_metadata {
                 display: inline-block;
-                padding: 3px 6px;
+				margin: 0 5px 5px 0;
+				padding: 5px;
                 font-size: 10px;
-                border-radius: 12px;
-                margin: 2px 4px 4px 0px;
+                border-radius: 5px;
+				font-weight: bold;
             }
             .pill {
-                background: #00356b;
-                color: white;
+                background-color: rgba(67, 147, 195, 0.16);
+                color: rgb(67, 147, 195);
                 cursor: pointer;
                 text-align: center;
             }
             .pill_metadata {
-                background: #e6e6e6;
-                color: #133467;
+                background-color: rgba(136, 136, 136, 0.16);
+                color: rgb(136, 136, 136);
             }
         }
     }
