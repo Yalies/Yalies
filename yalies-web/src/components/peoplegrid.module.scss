@@ -18,7 +18,7 @@
             flex-direction: row;
             align-items: flex-start;
 
-            img {
+            .profile_image {
                 width: 100px;
                 height: 120px;
                 border-radius: 10%;
@@ -37,35 +37,23 @@
                     font-size: 1.17em;
                 }
                 .row {
-                    .long_value {
-                        font-size: 14px;
-                        a {
-                            color: #00356b;
-                        }
-                    }
+					font-size: 14px;
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+					gap: 10px;
+					.college_shield {
+						width: 14px;
+						height: 14px;
+					}
+					a {
+						color: #00356b;
+					}
                 }
             }
         }
-        .pills {
+        .chip_container {
 			padding: 20px 0 0 0;
-			.pill, .pill_metadata {
-                display: inline-block;
-				margin: 0 5px 5px 0;
-				padding: 5px;
-                font-size: 10px;
-                border-radius: 5px;
-				font-weight: bold;
-            }
-            .pill {
-                background-color: rgba(67, 147, 195, 0.16);
-                color: rgb(67, 147, 195);
-                cursor: pointer;
-                text-align: center;
-            }
-            .pill_metadata {
-                background-color: rgba(136, 136, 136, 0.16);
-                color: rgb(136, 136, 136);
-            }
         }
     }
 }

@@ -18,7 +18,7 @@ export default function HomePage() {
 					},
 					body: JSON.stringify({
 						filters: {
-							school_code: "YC",
+							school: "Yale College",
 						},
 						page_size: 20,
 					}),
