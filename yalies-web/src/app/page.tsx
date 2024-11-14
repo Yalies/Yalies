@@ -16,10 +16,21 @@ export default function HomePage() {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({}),
+					body: JSON.stringify({
+						filters: {
+							school_code: "YC",
+						},
+						page_size: 20,
+					}),
 				});
 			} catch(e) {
 				console.error(e);
+			}
+			if(!response) {
+				return;
+			}
+			if(!response.ok) {
+				console.error("Error fetching people", response.status, response.statusText, await response.text());
 			}
 			const people: Person[] = await response?.json();
 			setPeople(people);

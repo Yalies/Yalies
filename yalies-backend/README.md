@@ -8,7 +8,7 @@
 ## Breaking API changes from V1
 - `/people` fields: `residence`, `building_code`, `entryway`, `floor`, `suite`, `room` removed because they are no longer exposed by the Yale Face Book
 - `/people` field `birthday` removed because it is redundant and locale-specific
-- `/people` fields `college`, `school`, and `organization` removed in favor of `college_code`, `school_code`, and `organization_code`
+- `/people` option `page` is now zero-indexed; i.e. first page starts at `page: 0`
 
 ## SQL details
 - We're using `sequelize` library to interact with the database
