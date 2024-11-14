@@ -18,7 +18,7 @@ export default function HomePage() {
 					},
 					body: JSON.stringify({
 						filters: {
-							school_code: "YC",
+							school: "Yale College",
 						},
 						page_size: 20,
 					}),
@@ -38,7 +38,6 @@ export default function HomePage() {
 	}, []);
 	return (
 		<>
-			<h1>Home page</h1>
 			<PeopleGrid people={people} />
 		</>
 	);

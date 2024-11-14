@@ -3,20 +3,22 @@
 #people_grid {
     margin-top: 15px;
     .person {
-        width: 3in;
+        width: 3.3in;
         display: inline-block;
         vertical-align: top;
         text-align: left;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        margin-right: 150px;
+		margin: 30px 15px 0 0;
+		background-color: #f5f5f5;
+		border-radius: 10px;
+		padding: 20px;
+		color: #000;
 
         .info_box {
             display: flex;
             flex-direction: row;
             align-items: flex-start;
 
-            img {
+            .profile_image {
                 width: 100px;
                 height: 120px;
                 border-radius: 10%;
@@ -35,35 +37,23 @@
                     font-size: 1.17em;
                 }
                 .row {
-                    .long_value {
-                        font-size: 14px;
-                        a {
-                            color: #00356b;
-                        }
-                    }
+					font-size: 14px;
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+					gap: 10px;
+					.college_shield {
+						width: 14px;
+						height: 14px;
+					}
+					a {
+						color: #00356b;
+					}
                 }
             }
         }
-        .pills {
-            margin: 5px 0px 4px -1px;
-            
-            .pill, .pill_metadata {
-                display: inline-block;
-                padding: 3px 6px;
-                font-size: 10px;
-                border-radius: 12px;
-                margin: 2px 4px 4px 0px;
-            }
-            .pill {
-                background: #00356b;
-                color: white;
-                cursor: pointer;
-                text-align: center;
-            }
-            .pill_metadata {
-                background: #e6e6e6;
-                color: #133467;
-            }
+        .chip_container {
+			padding: 20px 0 0 0;
         }
     }
 }

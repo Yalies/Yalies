@@ -23,11 +23,13 @@ export type Person = {
     address?: string;
 
     // Students
+    school?: string;
     school_code?: string;
     year?: number;
     curriculum?: string;
     
     // Undergrads
+    college?: string;
     college_code?: string;
     leave?: boolean;
     visitor?: boolean;
@@ -38,6 +40,7 @@ export type Person = {
     access_code?: string;
 
     // Staff
+    organization?: string;
     organization_code?: string;
     unit_class?: string;
     unit_code?: string;

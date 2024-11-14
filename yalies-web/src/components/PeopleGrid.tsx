@@ -2,6 +2,32 @@
 import { useMemo } from "react";
 import { Person } from "../../../yalies-shared/src/datatypes.js";
 import styles from "./peoplegrid.module.scss";
+import Chip from "./Chip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook, faCake, faEnvelope, faGraduationCap, faHouse } from "@fortawesome/free-solid-svg-icons";
+
+const COLLEGE_SHIELDS = {
+	"BF": "/shields/BF.png",
+	"BK": "/shields/BK.png",
+	"BR": "/shields/BR.png",
+	"DC": "/shields/DC.png",
+	"ES": "/shields/ES.png",
+	"GH": "/shields/GH.png",
+	"JE": "/shields/JE.png",
+	"MC": "/shields/MC.png",
+	"MY": "/shields/MY.png",
+	"PC": "/shields/PC.png",
+	"SM": "/shields/SM.png",
+	"SY": "/shields/SY.png",
+	"TC": "/shields/TC.png",
+	"TD": "/shields/TD.png",
+};
+
+function CollegeIcon({ collegeCode }: { collegeCode: keyof typeof COLLEGE_SHIELDS }) {
+	const shield: string = COLLEGE_SHIELDS[collegeCode];
+	if(!shield) return null;
+	return <img src={shield} alt={collegeCode} className={styles.college_shield} />;
+}
 
 export default function PeopleGrid({
 	people,
@@ -10,56 +36,62 @@ export default function PeopleGrid({
 }) {
 	const peopleElems = useMemo(() => {
 		return people.map(person => {
+			console.log(person)
 			const longValues = [
 				person.email && (
 					<div key="email" title="Email" className={styles.row}>
-						{/* TODO: FA icon */}
-						<p className={styles.long_value}>
-							<a href={`mailto:${person.email}`}>{person.email}</a>
-						</p>
+						<FontAwesomeIcon icon={faEnvelope} />
+						<span><a href={`mailto:${person.email}`}>{person.email}</a></span>
 					</div>
 				),
-				person.college_code && (
+				person.college_code && person.college_code in COLLEGE_SHIELDS && (
 					<div key="college_code" title="Residential College" className={styles.row}>
-						{/* TODO: college icon */}
-						<p className={styles.long_value}>
-							{person.college_code}
-						</p>
+						<CollegeIcon collegeCode={person.college_code as keyof typeof COLLEGE_SHIELDS} />
+						<span>{person.college}</span>
 					</div>
 				),
 				person.year && (
 					<div key="year" title="Graduation Year" className={styles.row}>
-						{/* TODO: FA icon */}
-						<p className={styles.long_value}>
-							{person.year}
-						</p>
+						<FontAwesomeIcon icon={faGraduationCap} />
+						<span>{person.year}</span>
 					</div>
 				),
 			];
 
-			const pills = [
+			const birthdayDate = new Date();
+			let birthdayString = "";
+			if(person.birth_month && person.birth_day) {
+				birthdayDate.setMonth(person.birth_month - 1);
+				birthdayDate.setDate(person.birth_day);
+				birthdayString = birthdayDate.toLocaleDateString("en-US", {
+					month: "short",
+					day: "numeric",
+				});
+			}
+
+			const chips = [
 				person.netid && (
-					<div key="netid" className={styles.pill}>NetID {person.netid}</div>
+					<Chip key="netid" primary>NetID {person.netid}</Chip>
 				),
 				person.upi && (
-					<div key="upi" className={styles.pill}>UPI {person.upi}</div>
+					<Chip key="upi" primary>UPI {person.upi}</Chip>
 				),
 				person.major && (
-					<div key="major" className={styles.pill_metadata}>{person.major}</div>
+					<Chip key="major" icon={faBook}>{person.major}</Chip>
 				),
 				person.birth_month && person.birth_day && (
-					<div key="birthday" className={styles.pill_metadata}>{person.birth_month} {person.birth_day}</div>
+					<Chip key="birthday" icon={faCake}>{birthdayString}</Chip>
 				),
 				person.address && (
-					<div key="address" className={styles.pill_metadata}>{person.address}</div>
+					<Chip key="address" icon={faHouse}>{person.address}</Chip>
 				),
 			];
 
 			return (
 				<div key={person.netid} className={styles.person}>
 					<div className={styles.info_box}>
-						{/* eslint-disable-next-line @next/next/no-img-element */}
 						<img
+							className={styles.profile_image}
 							src={person.image || "/no_image.png"}
 							alt={`${person.first_name} ${person.last_name}`}
 						/>
@@ -68,9 +100,7 @@ export default function PeopleGrid({
 							{longValues}
 						</div>
 					</div>
-					<div className={styles.pills}>
-						{pills}
-					</div>
+					<div className={styles.chip_container}>{chips}</div>
 				</div>
 			);
 		});
