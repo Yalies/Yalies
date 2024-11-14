@@ -2,6 +2,38 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 import { SEQUELIZE_DEFINITION_OPTIONS } from "../db.js";
 import { Person } from "../../../../yalies-shared/src/datatypes.js";
 
+export const PERSON_ALLOWED_FILTER_FIELDS = [
+	"netid",
+	"upi",
+	"email",
+	"mailbox",
+	"phone",
+	"title",
+	"first_name",
+	"preferred_name",
+	"middle_name",
+	"last_name",
+	"suffix",
+	"pronoun",
+	"school_code",
+	"school",
+	"year",
+	"curriculum",
+	"college",
+	"college_code",
+	"leave",
+	"birthday",
+	"major",
+	"access_code",
+	"organization_code",
+	"organization",
+	"unit_class",
+	"unit_code",
+	"unit",
+	"office_building",
+	"office_room",
+];
+
 export default class PersonModel extends Model {
 	// Identifiers
 	declare netid: string;
@@ -27,10 +59,12 @@ export default class PersonModel extends Model {
 	declare address: string;
 
 	// Students
+	declare school: string;
 	declare school_code: string;
 	declare year: number;
 	declare curriculum: string;
 	// Undergrads
+	declare college: string;
 	declare college_code: string;
 	declare leave: boolean;
 	declare visitor: boolean;
@@ -41,6 +75,7 @@ export default class PersonModel extends Model {
 	declare access_code: string;
 
 	// Staff
+	declare organization: string;
 	declare organization_code: string;
 	declare unit_class: string;
 	declare unit_code: string;
@@ -86,11 +121,13 @@ export default class PersonModel extends Model {
 			address: { type: DataTypes.STRING },
 
 			// Students
+			school: { type: DataTypes.STRING },
 			school_code: { type: DataTypes.STRING },
 			year: { type: DataTypes.INTEGER },
 			curriculum: { type: DataTypes.STRING },
 
 			// Undergrads
+			college: { type: DataTypes.STRING },
 			college_code: { type: DataTypes.STRING },
 			leave: { type: DataTypes.BOOLEAN },
 			visitor: { type: DataTypes.BOOLEAN },
@@ -101,6 +138,7 @@ export default class PersonModel extends Model {
 			access_code: { type: DataTypes.STRING },
 
 			// Staff
+			organization: { type: DataTypes.STRING },
 			organization_code: { type: DataTypes.STRING },
 			unit_class: { type: DataTypes.STRING },
 			unit_code: { type: DataTypes.STRING },
@@ -139,9 +177,11 @@ export default class PersonModel extends Model {
 			...this.phonetic_name != null && 		{ phonetic_name: this.phonetic_name },
 			...this.name_recording != null && 		{ name_recording: this.name_recording },
 			...this.address != null && 				{ address: this.address },
+			...this.school != null && 				{ school_code: this.school },
 			...this.school_code != null && 			{ school_code: this.school_code },
 			...this.year != null && 				{ year: this.year },
 			...this.curriculum != null && 			{ curriculum: this.curriculum },
+			...this.college != null && 				{ college_code: this.college },
 			...this.college_code != null && 		{ college_code: this.college_code },
 			...this.leave != null && 				{ leave: this.leave },
 			...this.visitor != null && 				{ visitor: this.visitor },
@@ -150,6 +190,7 @@ export default class PersonModel extends Model {
 			...this.birth_day != null && 			{ birth_day: this.birth_day },
 			...this.major != null && 				{ major: this.major },
 			...this.access_code != null && 			{ access_code: this.access_code },
+			...this.organization != null && 		{ organization_code: this.organization },
 			...this.organization_code != null && 	{ organization_code: this.organization_code },
 			...this.unit_class != null && 			{ unit_class: this.unit_class },
 			...this.unit_code != null && 			{ unit_code: this.unit_code },
