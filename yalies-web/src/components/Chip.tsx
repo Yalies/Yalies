@@ -5,14 +5,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function Chip({
 	children,
 	primary,
-	icon
+	icon,
+	birthday,
 }: {
 	children: React.ReactNode,
 	primary?: boolean,
-	icon: IconDefinition
+	birthday?: boolean,
+	icon?: IconDefinition,
 }) {
 	return (
-		<button className={`${styles.chip} ${primary ? styles.primary : ""}`}>
+		<button className={`
+			${styles.chip}
+			${primary ? styles.primary : ""}
+			${birthday ? styles.birthday : ""}
+		`}>
 			{ icon && <FontAwesomeIcon icon={icon} /> }
 			{children}
 		</button>

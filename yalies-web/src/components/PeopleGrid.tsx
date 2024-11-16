@@ -36,7 +36,6 @@ export default function PeopleGrid({
 }) {
 	const peopleElems = useMemo(() => {
 		return people.map(person => {
-			console.log(person)
 			const longValues = [
 				person.email && (
 					<div key="email" title="Email" className={styles.row}>
@@ -68,7 +67,7 @@ export default function PeopleGrid({
 					day: "numeric",
 				});
 			}
-
+			const todayIsBirthday = person.birth_month === new Date().getMonth() + 1 && person.birth_day === new Date().getDate();
 			const chips = [
 				person.netid && (
 					<Chip key="netid" primary>NetID {person.netid}</Chip>
@@ -80,7 +79,7 @@ export default function PeopleGrid({
 					<Chip key="major" icon={faBook}>{person.major}</Chip>
 				),
 				person.birth_month && person.birth_day && (
-					<Chip key="birthday" icon={faCake}>{birthdayString}</Chip>
+					<Chip key="birthday" icon={faCake} birthday={todayIsBirthday}>{birthdayString}</Chip>
 				),
 				person.address && (
 					<Chip key="address" icon={faHouse}>{person.address}</Chip>

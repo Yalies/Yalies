@@ -10,13 +10,30 @@
 	background-color: rgba(136, 136, 136, 0.16);
 	color: rgb(136, 136, 136);
 	border: none;
+	svg {
+		margin-right: 7px;
+	}
 	&.primary {
 		background-color: rgba(67, 147, 195, 0.16);
 		color: rgb(67, 147, 195);
-		cursor: pointer;
 		text-align: center;
 	}
-	svg {
-		margin-right: 7px;
+	&.birthday {
+		color: #00000099;
+		background: linear-gradient(-45deg,
+			hsl(0, 60%, 90%),
+			hsl(30, 60%, 90%),
+			hsl(60, 60%, 90%),
+			hsl(90, 60%, 90%),
+			hsl(120, 60%, 90%),
+			hsl(150, 60%, 90%),
+			hsl(190, 60%, 90%),
+			hsl(210, 60%, 90%),
+			hsl(240, 60%, 90%),
+			hsl(270, 60%, 90%),
+			hsl(300, 60%, 90%),
+			hsl(330, 60%, 90%),
+			hsl(360, 60%, 90%)
+		);
 	}
 }
