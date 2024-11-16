@@ -7,7 +7,7 @@ interface Cache {
 	[key: string]: any;
   }
   
-  export default class Source {
+export default class Source {
 	private cache: Cache;
 	protected newRecords: Record[] | null = null;
 	private readonly phoneCountryCodeRegex = /^\+1?\s/;
@@ -24,10 +24,10 @@ interface Cache {
 	  if (!phone) return null;
 	  
 	  let phoneStr = phone.toString();
-	  phoneStr = phoneStr.replace(this.phoneCountryCodeRegex, '');
-	  phoneStr = phoneStr.replace(this.phoneDisallowedCharactersRegex, '');
+	  phoneStr = phoneStr.replace(this.phoneCountryCodeRegex, "");
+	  phoneStr = phoneStr.replace(this.phoneDisallowedCharactersRegex, "");
 	  
-	  if (phoneStr === '1111111111') return null;
+	  if (phoneStr === "1111111111") return null;
 	  
 	  return phoneStr;
 	}
@@ -37,12 +37,12 @@ interface Cache {
 	 */
 	protected cleanOne(record: Record): Record {
 	  return Object.fromEntries(
-		Object.entries(record).filter(([_, value]) => 
+			Object.entries(record).filter(([_, value]) => 
 		  value !== null && 
 		  value !== undefined && 
-		  value !== '' || 
-		  typeof value === 'boolean'
-		)
+		  value !== "" || 
+		  typeof value === "boolean",
+			),
 	  );
 	}
   
@@ -56,6 +56,7 @@ interface Cache {
 	/**
 	 * Main scraping implementation to be overridden by subclasses
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async scrape(currentRecords: Record[]): Promise<void> {
 	  throw new Error("Not implemented by superclass");
 	}
@@ -68,14 +69,14 @@ interface Cache {
 	  const cachedRecords = await this.cache.get(cacheKey);
   
 	  if (cachedRecords) {
-		this.newRecords = cachedRecords;
+			this.newRecords = cachedRecords;
 	  } else {
-		await this.scrape(currentRecords);
-		if (!this.newRecords) {
+			await this.scrape(currentRecords);
+			if (!this.newRecords) {
 		  throw new Error("Scrape method must set newRecords");
-		}
-		this.newRecords = this.clean(this.newRecords);
-		await this.cache.set(cacheKey, this.newRecords);
+			}
+			this.newRecords = this.clean(this.newRecords);
+			await this.cache.set(cacheKey, this.newRecords);
 	  }
   
 	  return this.newRecords;
@@ -86,7 +87,7 @@ interface Cache {
 	 */
 	protected merge(currentPeople: Record[]): Record[] {
 	  if (!this.newRecords) {
-		throw new Error("No records to merge - must call pull() first");
+			throw new Error("No records to merge - must call pull() first");
 	  }
 	  return [...currentPeople, ...this.newRecords];
 	}
@@ -105,4 +106,4 @@ interface Cache {
 	protected hasS3Credentials(): boolean {
 	  return !!(process.env.S3_ACCESS_KEY && process.env.S3_SECRET_ACCESS_KEY);
 	}
-  }
+}
