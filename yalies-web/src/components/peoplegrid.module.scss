@@ -1,6 +1,6 @@
 @use "../shared.scss";
 
-#people_grid {
+.people_grid {
     margin-top: 15px;
     .person {
         width: 3.3in;
@@ -56,4 +56,12 @@
 			padding: 20px 0 0 0;
         }
     }
+}
+
+.loading_icon {
+	filter: grayscale(1) contrast(0.5) brightness(1.4);
+	display: block;
+	margin: 30px auto;
+	width: 25px;
+	height: 25px;
 }

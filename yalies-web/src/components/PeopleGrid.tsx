@@ -5,6 +5,7 @@ import styles from "./peoplegrid.module.scss";
 import Chip from "./Chip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faCake, faEnvelope, faGraduationCap, faHouse } from "@fortawesome/free-solid-svg-icons";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const COLLEGE_SHIELDS = {
 	"BF": "/shields/BF.png",
@@ -29,10 +30,18 @@ function CollegeIcon({ collegeCode }: { collegeCode: keyof typeof COLLEGE_SHIELD
 	return <img src={shield} alt={collegeCode} className={styles.college_shield} />;
 }
 
+function LoadingIcon() {
+	return <img src="/logo.png" alt="Loading" className={styles.loading_icon} />;
+}
+
 export default function PeopleGrid({
 	people,
+	loadMoreFunction,
+	hasReachedEnd,
 }: {
 	people: Person[];
+	loadMoreFunction: () => void;
+	hasReachedEnd: boolean;
 }) {
 	const peopleElems = useMemo(() => {
 		return people.map(person => {
@@ -104,10 +113,16 @@ export default function PeopleGrid({
 			);
 		});
 	}, [people]);
-
+	console.log(peopleElems.length)
 	return (
-		<div id={styles.people_grid}>
+		<InfiniteScroll
+			className={styles.people_grid}
+			dataLength={people.length}
+			next={() => { console.log("Load"); loadMoreFunction(); }}
+			hasMore={!hasReachedEnd}
+			loader={<LoadingIcon />}
+		>
 			{peopleElems}
-		</div>
+		</InfiniteScroll>
 	);
 };

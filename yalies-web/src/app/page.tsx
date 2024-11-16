@@ -1,13 +1,16 @@
 "use client";
 import PeopleGrid from "@/components/PeopleGrid";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Person } from "../../../yalies-shared/src/datatypes.js";
 
 export default function HomePage() {
 	const [people, setPeople] = useState<Person[]>([]);
 	const [birthdayPeople, setBirthdayPeople] = useState<Person[]>([]);
+	const [hasReachedEnd, setHasReachedEnd] = useState(false);
+	const [currentPage, setCurrentPage] = useState(0);
 
-	const getPeople = async () => {
+	const getPeople = useCallback(async () => {
+		if(hasReachedEnd) return;
 		let response;
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/api/people`, {
@@ -20,6 +23,7 @@ export default function HomePage() {
 					filters: {
 						school: "Yale College",
 					},
+					page: currentPage,
 					page_size: 20,
 				}),
 			});
@@ -35,11 +39,16 @@ export default function HomePage() {
 			console.error("Error fetching people", response.status, response.statusText, await response.text());
 			return;
 		}
-		const people: Person[] = await response?.json();
-		setPeople(people);
-	};
+		const newPeople: Person[] = await response?.json();
+		if(newPeople.length === 0) {
+			setHasReachedEnd(true);
+			return;
+		}
+		setPeople([...people, ...newPeople]);
+		setCurrentPage(currentPage + 1);
+	}, [currentPage, people]);
 
-	const getTodaysBirthdays = async () => {
+	const getTodaysBirthdays = useCallback(async () => {
 		let response;
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/api/people`, {
@@ -69,13 +78,14 @@ export default function HomePage() {
 			console.error("Error fetching people", response.status, response.statusText, await response.text());
 			return;
 		}
-		const people: Person[] = await response?.json();
-		setBirthdayPeople(people);
-	};
+		const newPeople: Person[] = await response?.json();
+		setBirthdayPeople(newPeople);
+	}, []);
 
 	useEffect(() => { // TODO: Convert to use SWR
 		getTodaysBirthdays();
 		getPeople();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const peopleToDisplay = [
@@ -85,7 +95,11 @@ export default function HomePage() {
 
 	return (
 		<>
-			<PeopleGrid people={peopleToDisplay} />
+			<PeopleGrid
+				people={peopleToDisplay}
+				loadMoreFunction={getPeople}
+				hasReachedEnd={hasReachedEnd}
+			/>
 		</>
 	);
 }

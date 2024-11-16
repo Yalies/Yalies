@@ -43,6 +43,7 @@ export default class PeopleRouter {
 				where,
 				limit: pageSize,
 				offset: page * pageSize,
+				order: [["last_name", "ASC"], ["first_name", "ASC"]],
 			});
 		} catch(e) {
 			console.error(e);
