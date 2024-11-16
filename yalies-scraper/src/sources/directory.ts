@@ -1,4 +1,5 @@
 import Source from "./source.js";
+import axios from 'axios';
 
 interface DirectoryEntry {
   netid: string;
@@ -29,10 +30,66 @@ interface DirectoryEntry {
   primary_division_name: string;
 }
 
-interface YaleDirectoryAPI {
-  people(options: { netid?: string; first_name?: string; last_name?: string; email?: string; college?: string; school?: string; include_total?: boolean }): Promise<DirectoryEntry[]>;
-  person(options: { first_name: string; last_name: string }): Promise<DirectoryEntry | null>;
-}
+class YaleDirectoryAPI {
+	private readonly baseUrl = 'https://directory.yale.edu/api';
+	private readonly sessionCookie: string;
+	private readonly csrfToken: string;
+  
+	constructor(sessionCookie: string, csrfToken: string) {
+	  this.sessionCookie = sessionCookie;
+	  this.csrfToken = csrfToken;
+	}
+  
+	private getHeaders() {
+	  return {
+		'Cookie': this.sessionCookie,
+		'X-CSRF-Token': this.csrfToken,
+		'Content-Type': 'application/json',
+	  };
+	}
+  
+	async people(options: {
+	  netid?: string;
+	  first_name?: string;
+	  last_name?: string;
+	  email?: string;
+	  college?: string;
+	  school?: string;
+	  include_total?: boolean;
+	}): Promise<DirectoryEntry[]> {
+	  try {
+		const response = await axios.get(`${this.baseUrl}/people`, {
+		  params: options,
+		  headers: this.getHeaders()
+		});
+  
+		if (response.data && Array.isArray(response.data.people)) {
+		  return response.data.people;
+		}
+		return [];
+	  } catch (error) {
+		console.error('Error fetching from directory:', error);
+		return [];
+	  }
+	}
+  
+	async person(options: { first_name: string; last_name: string }): Promise<DirectoryEntry | null> {
+	  try {
+		const response = await axios.get(`${this.baseUrl}/person`, {
+		  params: options,
+		  headers: this.getHeaders()
+		});
+  
+		if (response.data && response.data.person) {
+		  return response.data.person;
+		}
+		return null;
+	  } catch (error) {
+		console.error('Error fetching person from directory:', error);
+		return null;
+	  }
+	}
+  }
 
 export default class DirectorySource extends Source {
   private static readonly THREAD_COUNT = 3;
