@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.scss";
 import mainStyle from "./main.module.scss";
-import Navbar from "@/components/Navbar";
 
 
 export const metadata: Metadata = {
@@ -18,7 +17,6 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<div id={mainStyle.content}>
-					<Navbar />
 					{children}
 				</div>
 			</body>

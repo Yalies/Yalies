@@ -1,12 +1,12 @@
 import express, {Request, Response} from "express";
 import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
 import { Op, WhereOptions } from "sequelize";
+import CAS from "../cas.js";
 
 export default class PeopleRouter {
 	getRouter = () => {
 		const router = express.Router();
-		// router.get("/", CAS.requireAuthentication, this.getPeople);
-		router.post("/", this.getPeople);
+		router.post("/", CAS.requireAuthentication, this.getPeople);
 		return router;
 	};
 

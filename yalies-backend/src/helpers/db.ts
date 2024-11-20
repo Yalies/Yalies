@@ -19,6 +19,7 @@ export default class DB {
 					rejectUnauthorized: false,
 				},
 			},
+			logging: false,
 		});
 		this.testConnection();
 		this.registerModels();

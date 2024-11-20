@@ -1,0 +1,37 @@
+@use "../shared.scss";
+
+#filters {
+	margin-bottom: 6px;
+	margin-left: calc(100px + 20px + 10px);
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 20px;
+	button {
+		font-size: 12px;
+		background: none;
+		border: 0;
+		padding: 8px 8px;
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		font-family: inherit;
+		svg {
+			height: 12px;
+			color: #666;
+		}
+		&.active {
+			color: #468ff2;
+			svg {
+				height: 9px;
+			}
+		}
+	}
+	.reset {
+		background-color: #dc3545AA;
+		color: #FFF;
+		font-size: 10px;
+		padding: 5px;
+		border-radius: 7px;
+	}
+}

@@ -41,13 +41,13 @@ export default class WebServer {
 
 	initializeSubRouters = () => {
 		const pingPongRouter = new PingPongRouter();
-		this.#app.use("/api/ping", pingPongRouter.getRouter());
+		this.#app.use("/v2/ping", pingPongRouter.getRouter());
 		
 		const peopleRouter = new PeopleRouter();
-		this.#app.use("/api/people", peopleRouter.getRouter());
+		this.#app.use("/v2/people", peopleRouter.getRouter());
 		
 		const casRouter = new CasRouter();
-		this.#app.use("/api/login", casRouter.getRouter());
+		this.#app.use("/v2/login", casRouter.getRouter());
 	};
 
 	serve = () => {

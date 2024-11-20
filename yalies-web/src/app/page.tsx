@@ -2,8 +2,14 @@
 import PeopleGrid from "@/components/PeopleGrid";
 import { useCallback, useEffect, useState } from "react";
 import { Person } from "../../../yalies-shared/src/datatypes.js";
+import Navbar from "@/components/Navbar";
+import Filters from "@/components/Filters";
+import Topbar from "@/components/Topbar";
+import Splash from "@/components/Splash";
+
 
 export default function HomePage() {
+	const [isUnauthenticated, setUnauthenticated] = useState(false);
 	const [people, setPeople] = useState<Person[]>([]);
 	const [birthdayPeople, setBirthdayPeople] = useState<Person[]>([]);
 	const [hasReachedEnd, setHasReachedEnd] = useState(false);
@@ -13,7 +19,7 @@ export default function HomePage() {
 		if(hasReachedEnd) return;
 		let response;
 		try {
-			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/api/people`, {
+			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
 				method: "POST",
 				credentials: "include",
 				headers: {
@@ -36,6 +42,14 @@ export default function HomePage() {
 			return;
 		}
 		if(!response.ok) {
+			if(response.status === 401) {
+				setUnauthenticated(true);
+				return;
+			}
+			if(response.status === 403) {
+				window.location.href = "/forbidden";
+				return;
+			}
 			console.error("Error fetching people", response.status, response.statusText, await response.text());
 			return;
 		}
@@ -46,12 +60,12 @@ export default function HomePage() {
 		}
 		setPeople([...people, ...newPeople]);
 		setCurrentPage(currentPage + 1);
-	}, [currentPage, people]);
+	}, [currentPage, hasReachedEnd, people]);
 
 	const getTodaysBirthdays = useCallback(async () => {
 		let response;
 		try {
-			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/api/people`, {
+			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
 				method: "POST",
 				credentials: "include",
 				headers: {
@@ -75,6 +89,14 @@ export default function HomePage() {
 			return;
 		}
 		if(!response.ok) {
+			if(response.status === 401) {
+				setUnauthenticated(true);
+				return;
+			}
+			if(response.status === 403) {
+				window.location.href = "/forbidden";
+				return;
+			}
 			console.error("Error fetching people", response.status, response.statusText, await response.text());
 			return;
 		}
@@ -88,6 +110,17 @@ export default function HomePage() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	if(isUnauthenticated) {
+		return (
+			<>
+				<Topbar>
+					<Navbar />
+				</Topbar>
+				<Splash />
+			</>
+		);
+	}
+
 	const peopleToDisplay = [
 		...birthdayPeople,
 		...people,
@@ -95,6 +128,10 @@ export default function HomePage() {
 
 	return (
 		<>
+			<Topbar>
+				<Navbar />
+				<Filters />
+			</Topbar>
 			<PeopleGrid
 				people={peopleToDisplay}
 				loadMoreFunction={getPeople}
