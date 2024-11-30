@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import { Lexend_Deca } from "next/font/google";
 import "./globals.scss";
 import mainStyle from "./main.module.scss";
-import Navbar from "@/components/Navbar";
 
-// TODO: og yalies specifies a unicode range, probably wider than latin
-const font = Lexend_Deca({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "Yalies",
@@ -15,13 +11,12 @@ export const metadata: Metadata = {
 export default function RootLayout({
 	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
 	return (
 		<html lang="en">
-			<body className={font.className}>
+			<body>
 				<div id={mainStyle.content}>
-					<Navbar />
 					{children}
 				</div>
 			</body>

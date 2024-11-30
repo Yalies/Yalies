@@ -1,27 +1,74 @@
 @use "../shared.scss";
 
 #navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    a {
-        color: shared.$accent-color;
-        text-decoration: none;
-    }
-    #logo {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 20px;
-        h2 {
-            font-weight: 600;
-            font-size: 40px;
-        }
-    }
-    #links {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 10px;
-    }
+	padding: 0 10px;
+	display: flex;
+	align-items: center;
+	justify-content: stretch;
+	gap: 20px;
+	margin-bottom: 6px;
+	#logo {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		text-decoration: none;
+		color: inherit;
+		gap: 10px;
+		width: 100px;
+		img {
+			height: 30px;
+			width: 30px;
+		}
+		h2 {
+			font-size: 20px;
+		}
+	}
+	#search_wrapper {
+		width: auto;
+		display: flex;
+		justify-content: stretch;
+		align-items: center;
+		gap: 10px;
+
+		input {
+			width: 35vw;
+			font-family: inherit;
+			font-size: 14px;
+			border-radius: 4px;
+			height: 100%;
+			background-color: #FFF;
+			color: #000;
+			border: solid 2px rgb(0, 0, 0, 0.1);
+			padding: 10px 15px;
+		}
+		p {
+			color: #00000077;
+			font-size: 10px;
+			line-height: 1.5;
+		}
+	}
+	#links {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 25px;
+		font-size: 16px;
+		a {
+			text-decoration: none;
+			color: #454545;
+		}
+		#profile_button {
+			width: 30px;
+			height: 30px;
+			border-radius: 500px;
+			background-color: #e6e6e6;
+			border: none;
+			svg {
+				display: block;
+				margin: auto;
+				height: 15px;
+			}
+		}
+	}
 }

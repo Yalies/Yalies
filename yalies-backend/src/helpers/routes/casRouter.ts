@@ -6,7 +6,7 @@ export default class CasRouter {
 		const router = express.Router();
 		router.get("/", this.casLogin);
 		return router;
-	}
+	};
 
 	casLogin = (req: Request, res: Response, next: NextFunction) => {
 		const authFunction = passport.authenticate("cas", (err: Error, user: Express.User) => {
@@ -15,10 +15,9 @@ export default class CasRouter {
 			
 			return req.logIn(user, async (err) => {
 				if(err) return res.status(500).json({ message: "Could not log in" });
-				
-				return res.redirect("/");
+				return res.redirect(process.env.FRONTEND_URL + "/");
 			});
 		});
 		authFunction(req, res, next);
-	}
+	};
 };

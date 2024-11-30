@@ -23,8 +23,8 @@ export type Person = {
     address?: string;
 
     // Students
-    school_code?: string;
     school?: string;
+    school_code?: string;
     year?: number;
     curriculum?: string;
     
@@ -34,21 +34,14 @@ export type Person = {
     leave?: boolean;
     visitor?: boolean;
     image?: string;
-    birthday?: string;
     birth_month?: number;
     birth_day?: number;
-    residence?: string;
-    building_code?: string;
-    entryway?: string;
-    floor?: number;
-    suite?: number;
-    room?: string;
     major?: string;
     access_code?: string;
 
     // Staff
-    organization_code?: string;
     organization?: string;
+    organization_code?: string;
     unit_class?: string;
     unit_code?: string;
     unit?: string;
