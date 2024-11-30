@@ -1,5 +1,5 @@
 export default class Source {
-	async scrape() {
-		
+	async scrape(): Promise<void> {
+
 	}
 };
