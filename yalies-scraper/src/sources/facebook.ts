@@ -1,80 +1,46 @@
 import Source from "./source.js";
-import axios from "axios";
 import { JSDOM } from "jsdom";
+import fetch from "node-fetch";
 
-// Types
-interface Person {
-  school: string;
-  school_code: string;
-  first_name: string;
-  last_name: string;
-  year: number | null;
-  pronouns: string | null;
-  college: string;
-  email?: string;
-  residence?: string;
-  building_code?: string;
-  entryway?: string;
-  floor?: string;
-  suite?: string;
-  room?: string;
-  birthday?: string;
-  birth_month?: number;
-  birth_day?: number;
-  major?: string;
-  visitor: boolean;
-  access_code?: string;
-  phone?: string;
-  address: string;
-  leave: boolean;
-}
+const ROOM_REGEX = /^([A-Z]+)-([A-Z]+)(\d+)(\d)([A-Z]+)?$/;
+const BIRTHDAY_REGEX = /^[A-Z][a-z]{2} \d{1,2}$/;
+const ACCESS_CODE_REGEX = /[0-9]-[0-9]+/;
+const PHONE_REGEX = /[0-9]{3}-[0-9]{3}-[0-9]{4}/;
 
-interface StudentContainer extends HTMLElement {
-  querySelector(selector: string): HTMLElement | null;
-  querySelectorAll(selector: string): NodeListOf<HTMLElement>;
-}
+const monthAbbreviations = [
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
 
 export default class FacebookSource extends Source {
-	private readonly cookie: string;
-	private readonly majors: string[];
-	private readonly majorFullNames: Record<string, string>;
-	private readonly monthAbbreviations = [
-		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-	];
+	#cookie: string;
 
-	private static readonly ROOM_REGEX = /^([A-Z]+)-([A-Z]+)(\d+)(\d)([A-Z]+)?$/;
-	private static readonly BIRTHDAY_REGEX = /^[A-Z][a-z]{2} \d{1,2}$/;
-	private static readonly ACCESS_CODE_REGEX = /[0-9]-[0-9]+/;
-	private static readonly PHONE_REGEX = /[0-9]{3}-[0-9]{3}-[0-9]{4}/;
-
-	constructor(cache: any, cookie: string) {
-		super(cache);
-		this.cookie = cookie;
-    
-		// Load majors and major full names from files
-		// Note: In a real implementation, these would be loaded from files
-		this.majors = [];
-		this.majorFullNames = {};
+	constructor(cookie: string) {
+		super();
+		this.#cookie = cookie;
 	}
 
 	private async getHtml(): Promise<string> {
-		// First request to set college
-		await axios.get("https://students.yale.edu/facebook/ChangeCollege", {
-			params: { newOrg: "Yale College" },
-			headers: { Cookie: this.cookie },
-		});
-
-		// Second request to get student data
-		const response = await axios.get("https://students.yale.edu/facebook/PhotoPageNew", {
-			params: {
-				currentIndex: -1,
-				numberToGet: -1,
+		// First, set the college to search
+		// Equivalent to changing the dropdown from a browser
+		await fetch("https://students.yale.edu/facebook/ChangeCollege?newOrg=Yale%20College", {
+			method: "GET",
+			headers: {
+				"Cookie": this.#cookie,
 			},
-			headers: { Cookie: this.cookie },
 		});
 
-		return response.data;
+		// Next, send the request to get the data
+		const response = await fetch("https://students.yale.edu/facebook/PhotoPageNew?currentIndex=-1&numberToGet=-1", {
+			method: "GET",
+			headers: {
+				"Cookie": this.#cookie,
+			},
+		});
+		
+		const json = await response.json();
+
+		return json;
 	}
 
 	private parseRoom(room: string): { 
