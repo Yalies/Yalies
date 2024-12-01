@@ -14,7 +14,7 @@ export const PERSON_ALLOWED_FILTER_FIELDS = [
 	"middle_name",
 	"last_name",
 	"suffix",
-	"pronoun",
+	"pronouns",
 	"school_code",
 	"school",
 	"year",

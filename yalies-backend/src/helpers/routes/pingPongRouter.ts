@@ -10,8 +10,6 @@ export default class PingPongRouter {
 	};
 
 	pingPong = (req: Request, res: Response) => {
-		console.log(req.isAuthenticated());
-		console.log(req.user);
 		res.send("pong");
 	};
 };

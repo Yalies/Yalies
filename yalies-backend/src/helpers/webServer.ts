@@ -5,6 +5,7 @@ import CasRouter from "./routes/casRouter.js";
 import passport from "passport";
 import session from "express-session";
 import cors from "cors";
+import FiltersRouter from "./routes/filtersRouter.js";
 
 export default class WebServer {
 	#app: Express;
@@ -48,6 +49,9 @@ export default class WebServer {
 		
 		const casRouter = new CasRouter();
 		this.#app.use("/v2/login", casRouter.getRouter());
+		
+		const filtersRouter = new FiltersRouter();
+		this.#app.use("/v2/filters", filtersRouter.getRouter());
 	};
 
 	serve = () => {
