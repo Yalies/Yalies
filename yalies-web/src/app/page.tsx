@@ -1,6 +1,6 @@
 "use client";
 import PeopleGrid from "@/components/PeopleGrid";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Person } from "../../../yalies-shared/src/datatypes.js";
 import Navbar from "@/components/Navbar";
 import Filters from "@/components/Filters";
@@ -10,15 +10,34 @@ import Searchbar from "@/components/Searchbar";
 
 
 export default function HomePage() {
+	const DEFAULT_FILTERS = {
+		school: ["Yale College"],
+		year: [],
+		college: [],
+		major: [],
+	};
 	const [isUnauthenticated, setUnauthenticated] = useState(false);
 	const [people, setPeople] = useState<Person[]>([]);
 	const [birthdayPeople, setBirthdayPeople] = useState<Person[]>([]);
 	const [hasReachedEnd, setHasReachedEnd] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
+	const [filters, setFilters] = useState<Record<string, string[]> | null>(DEFAULT_FILTERS);
 
-	const getPeople = useCallback(async () => {
+	const getPeople = async () => {
 		if(hasReachedEnd) return;
+		if(filters === null) return;
 		let response;
+
+		// Construct the filter object.
+		// We have to do this because Sequelize treats empty array
+		// as only allowing null values to pass through the filter
+		const filterObject: Record<string, string[]> = {};
+		if(filters.year && filters.year.length > 0) filterObject.year = filters.year;
+		if(filters.school && filters.school.length > 0) filterObject.school = filters.school;
+		if(filters.college && filters.college.length > 0) filterObject.college = filters.college;
+		if(filters.major && filters.major.length > 0) filterObject.major = filters.major;
+
+		console.log(filters)
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
 				method: "POST",
@@ -27,9 +46,7 @@ export default function HomePage() {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					filters: {
-						school: "Yale College",
-					},
+					filters: filterObject,
 					page: currentPage,
 					page_size: 20,
 				}),
@@ -61,9 +78,9 @@ export default function HomePage() {
 		}
 		setPeople([...people, ...newPeople]);
 		setCurrentPage(currentPage + 1);
-	}, [currentPage, hasReachedEnd, people]);
+	};
 
-	const getTodaysBirthdays = useCallback(async () => {
+	const getTodaysBirthdays = async () => {
 		let response;
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
@@ -103,13 +120,16 @@ export default function HomePage() {
 		}
 		const newPeople: Person[] = await response?.json();
 		setBirthdayPeople(newPeople);
-	}, []);
+	};
 
 	useEffect(() => { // TODO: Convert to use SWR
 		getTodaysBirthdays();
-		getPeople();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => { // TODO: Convert to use SWR
+		getPeople();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [filters]);
 
 	if(isUnauthenticated) {
 		return (
@@ -122,20 +142,48 @@ export default function HomePage() {
 		);
 	}
 
-	const peopleToDisplay = [
+	const filtersAreDefault = (
+		filters !== null &&
+		filters.school && filters.school.length === 1 &&
+		filters.school[0] === "Yale College" &&
+		filters.year && filters.year.length === 0 &&
+		filters.college && filters.college.length === 0 &&
+		filters.major && filters.major.length === 0
+	);
+
+	const peopleToDisplay = filtersAreDefault ? [
 		...birthdayPeople,
 		...people,
-	];
+	] : people;
 
 	const searchbar = (
 		<Searchbar />
 	);
 
+	const setFilterValue = (key: string, newValue: string[]) => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters({ ...filters, [key]: newValue });
+	};
+
+	const reset = () => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters(DEFAULT_FILTERS);
+	};
+
 	return (
 		<>
 			<Topbar>
 				<Navbar middleContent={searchbar} />
-				<Filters />
+				<Filters
+					filters={filters || {}}
+					setFilterValue={setFilterValue}
+					reset={reset}
+					filtersAreDefault={filtersAreDefault}
+				/>
 			</Topbar>
 			<PeopleGrid
 				people={peopleToDisplay}

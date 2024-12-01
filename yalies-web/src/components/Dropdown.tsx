@@ -63,7 +63,10 @@ function DropdownPopup({
 			<DropdownOptions
 				key={option.value}
 				label={option.label}
-				onClick={() => onValueChange([...value, option.value])}
+				onClick={() => {
+					onValueChange([...value, option.value]);
+					setSearchText("");
+				}}
 			/>
 		));
 

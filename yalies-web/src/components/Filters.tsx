@@ -2,12 +2,17 @@ import styles from "./filters.module.scss";
 import Dropdown, { DropdownOption } from "./Dropdown";
 import { useCallback, useEffect, useState } from "react";
 
-export default function Filters() {
-	const [school, setSchool] = useState<string[]>(["Yale College"]);
-	const [year, setYear] = useState<string[]>([]);
-	const [college, setCollege] = useState<string[]>([]);
-	const [major, setMajor] = useState<string[]>([]);
-
+export default function Filters({
+	filters,
+	setFilterValue,
+	reset,
+	filtersAreDefault,
+}: {
+	filters: Record<string, string[]>;
+	setFilterValue: (key: string, newValue: string[]) => void;
+	reset: () => void;
+	filtersAreDefault: boolean;
+}) {
 	const [schoolOptions, setSchoolOptions] = useState<DropdownOption[]>([
 		{ label: "Yale College", value: "Yale College" },
 	]);
@@ -35,7 +40,7 @@ export default function Filters() {
 			console.error("Error fetching filters", response.status, response.statusText, await response.text());
 			return;
 		}
-		const filters: Record<string, unknown[]> = await response?.json();
+		const filterOptions: Record<string, unknown[]> = await response?.json();
 
 		const filterToDropdownOption = (options: unknown[]) => {
 			return (options as string[])
@@ -43,56 +48,41 @@ export default function Filters() {
 				.sort((a, b) => a.label.localeCompare(b.label));
 		};
 
-		setSchoolOptions(filterToDropdownOption(filters["school"]));
-		setYearOptions(filterToDropdownOption(filters["year"]));
-		setCollegeOptions(filterToDropdownOption(filters["college"]));
-		setMajorOptions(filterToDropdownOption(filters["major"]));
+		setSchoolOptions(filterToDropdownOption(filterOptions["school"]));
+		setYearOptions(filterToDropdownOption(filterOptions["year"]));
+		setCollegeOptions(filterToDropdownOption(filterOptions["college"]));
+		setMajorOptions(filterToDropdownOption(filterOptions["major"]));
 	}, []);
 
 	useEffect(() => {
 		getFilters();
 	}, [getFilters]);
 
-	const reset = useCallback(() => {
-		setSchool(["Yale College"]);
-		setYear([]);
-		setCollege([]);
-		setMajor([]);
-	}, []);
-
-	const filtersAreDefault = (
-		school.length === 1 &&
-		school[0] === "Yale College" &&
-		year.length === 0 &&
-		college.length === 0 &&
-		major.length === 0
-	);
-
 	return (
 		<div id={styles.filters}>
 			<Dropdown
 				label="School"
 				options={schoolOptions}
-				value={school}
-				onValueChange={setSchool}
+				value={filters?.school || []}
+				onValueChange={(val) => setFilterValue("school", val)}
 			/>
 			<Dropdown
 				label="Year"
 				options={yearOptions}
-				value={year}
-				onValueChange={setYear}
+				value={filters?.year || []}
+				onValueChange={(val) => setFilterValue("year", val)}
 			/>
 			<Dropdown
 				label="College"
 				options={collegeOptions}
-				value={college}
-				onValueChange={setCollege}
+				value={filters?.college || []}
+				onValueChange={(val) => setFilterValue("college", val)}
 			/>
 			<Dropdown
 				label="Major"
 				options={majorOptions}
-				value={major}
-				onValueChange={setMajor}
+				value={filters?.major || []}
+				onValueChange={(val) => setFilterValue("major", val)}
 			/>
 			<button
 				className={`${styles.reset} ${filtersAreDefault ? "" : styles.active}`}

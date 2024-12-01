@@ -7,7 +7,7 @@ import { Lexend_Deca } from "next/font/google";
 
 const logoFont = Lexend_Deca({ subsets: ["latin"] });
 
-export default function Navbar({ middleContent }: { middleContent: React.ReactNode }) {
+export default function Navbar({ middleContent }: { middleContent?: React.ReactNode }) {
 	return (
 		<nav id={styles.navbar}>
 			<Link href="/" id={styles.logo} className={logoFont.className}>
