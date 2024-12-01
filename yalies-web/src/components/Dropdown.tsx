@@ -9,6 +9,21 @@ export type DropdownOption = {
 	value: string;
 };
 
+function DropdownChip({
+	label,
+	onRemove,
+}: {
+	label: string;
+	onRemove: () => void;
+}) {
+	return (
+		<div className={styles.dropdown_chip}>
+			{label}
+			<FontAwesomeIcon icon={faX} onClick={onRemove} />
+		</div>
+	);
+};
+
 function DropdownOptions({
 	label,
 	onClick,
@@ -58,8 +73,21 @@ function DropdownPopup({
 		</div>
 	)
 	
+	const chips = options
+		.filter((option) => value.includes(option.value))
+		.map((option) => (
+			<DropdownChip
+				key={option.value}
+				label={option.label}
+				onRemove={() => onValueChange(value.filter((v) => v !== option.value))}
+			/>
+		));
+
 	return (
 		<div className={styles.dropdown_popup}>
+			<div className={styles.chip_container}>
+				{chips}
+			</div>
 			<Input
 				autofocus
 				placeholder={label}

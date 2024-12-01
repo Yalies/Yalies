@@ -63,6 +63,28 @@
 	}
 }
 
+.chip_container {
+	padding: 8px 8px 0 8px;
+}
+
+.dropdown_chip {
+	display: inline-block;
+	margin: 5px;
+	padding: 8px;
+	font-size: 12px;
+	border-radius: 5px;
+	font-weight: 700;
+	background-color: rgba(136, 136, 136, 0.16);
+	color: rgb(136, 136, 136);
+	cursor: pointer;
+	svg {
+		margin-left: 7px;
+		&:hover {
+			color: #dc3545;
+		}
+	}
+}
+
 .no_options {
 	text-align: center;
 	padding: 15px;
