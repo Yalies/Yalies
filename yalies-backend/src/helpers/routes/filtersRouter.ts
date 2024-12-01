@@ -1,5 +1,5 @@
 import express, {Request, Response} from "express";
-import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
+import PersonModel from "../models/PersonModel.js";
 import { col, fn } from "sequelize";
 
 // We have to use this instead of PERSON_ALLOWED_FILTER_FIELDS

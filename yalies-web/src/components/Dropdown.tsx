@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./dropdown.module.scss";
 import { faX, faCaretUp } from "@fortawesome/free-solid-svg-icons";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Input from "./Input";
 
 export type DropdownOption = {
