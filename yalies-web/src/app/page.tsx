@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
+import Searchbar from "@/components/Searchbar";
 
 
 export default function HomePage() {
@@ -126,10 +127,14 @@ export default function HomePage() {
 		...people,
 	];
 
+	const searchbar = (
+		<Searchbar />
+	);
+
 	return (
 		<>
 			<Topbar>
-				<Navbar />
+				<Navbar middleContent={searchbar} />
 				<Filters />
 			</Topbar>
 			<PeopleGrid
