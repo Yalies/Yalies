@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { SEQUELIZE_DEFINITION_OPTIONS } from "../db.js";
-import { Person } from "yalies-shared";
+import { Person } from "../../../../yalies-shared/src/datatypes.js";
 
 export const PERSON_ALLOWED_FILTER_FIELDS = [
 	"netid",
