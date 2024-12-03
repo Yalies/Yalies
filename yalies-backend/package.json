@@ -5,9 +5,16 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "npx tsc && node build/yalies-backend/src/index.js",
+	"start": "node build/index.js",
+	"copy-shared": "rm -rf src/yalies-shared && cp -r ../yalies-shared ./src",
+	"build": "npx tsc",
+    "dev": "npm run copy-shared && npm run build && NODE_ENV=development npm start",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix"
+    "format": "eslint src/**/*.ts --fix",
+	"deploy": "npm run copy-shared && gcloud run deploy --source . --region us-central1 --allow-unauthenticated yalies-backend"
+  },
+  "engines": {
+	"node": "20"
   },
   "repository": {
     "type": "git",

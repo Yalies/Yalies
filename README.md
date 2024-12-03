@@ -42,6 +42,13 @@ Sometimes, we need configuration settings that are different for each developer/
 
 In each directory, a `.env.template` file is provided.
 
+The file that will be used for development is `.env.development`.
+
+Production environment variables are a bit different:
+- For frontend, the `.env.production` file is used.
+- For backend, specify them in the Google Cloud console ([docs](https://cloud.google.com/run/docs/configuring/services/environment-variables#setting))
+	- Note that `$PORT` is automatically specified and should not be specified in the console
+
 ### Cloud SQL Auth Proxy
 
 Google Cloud SQL has additional protections so that only authorized users can access the database. To connect to the database, you need to run the Cloud SQL Auth Proxy.
@@ -66,7 +73,7 @@ Create a new terminal and `cd yalies-backend`.
 
 `npm install` to install dependencies.
 
-`cp .env.template .env` to create a new `.env` file. Fill in the values, which should have been provided to you by your team lead.
+Run `cp .env.template .env.development`. Fill in the values, which should have been provided to you by your team lead.
 
 `npm run dev` to start the development server.
 
@@ -80,7 +87,7 @@ Create a new terminal, separate from your backend terminal, and `cd yalies-web`.
 
 `npm install` to install dependencies.
 
-`cp .env.template .env` to create a new `.env` file. Fill in the values, which should have been provided to you by your team lead.
+Run `cp .env.template .env.development`. Fill in the values, which should have been provided to you by your team lead.
 
 `npm run dev` to start the development server.
 
@@ -120,12 +127,20 @@ There are some additional services you may see enabled in the Cloud Console, but
 - Yalies Developer Service Account (Under IAM & Admin): Used for the gcloud CLI tool
 	- If you need your key to be added to this service account, ask your team lead
 
+### How to deploy
+1. Ask your team lead for the `.env.production` files.
+2. In `yalies-backend`, run `npm run deploy`.
+
 ## Maintenance
 - To get a SQL command line, run the following while the Cloud SQL Auth Proxy is running:
 
 ```bash
 psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres"
 ```
+
+## Shared Directory
+- Note that the build scripts copy the shared directory into the backend and frontend directories.
+- This is necessary because of the way Google Cloud Run deploys... don't ask
 
 ## Author
 

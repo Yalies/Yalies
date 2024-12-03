@@ -9,7 +9,6 @@
 		"allowSyntheticDefaultImports": true
 	},
 	"include": [
-		"src/**/*.ts",
-		"../yalies-shared/src/**/*.ts"
+		"src/**/*.ts"
 	]
 }
