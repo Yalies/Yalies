@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+	"copy-shared": "rm -rf src/yalies-shared && cp -r ../yalies-shared ./src",
+    "dev": "npm run copy-shared && next dev",
+    "build": "npm run copy-shared && next build",
     "start": "next start",
     "lint": "next lint"
   },

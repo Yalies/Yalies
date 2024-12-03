@@ -1,13 +1,12 @@
 "use client";
 import PeopleGrid from "@/components/PeopleGrid";
 import { useEffect, useState } from "react";
-import { Person } from "../../../yalies-shared/src/datatypes.js";
+import { Person } from "@/yalies-shared/datatypes";
 import Navbar from "@/components/Navbar";
 import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
 import Searchbar from "@/components/Searchbar";
-
 
 export default function HomePage() {
 	const DEFAULT_FILTERS = {
