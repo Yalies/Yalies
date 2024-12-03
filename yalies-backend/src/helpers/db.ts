@@ -12,13 +12,8 @@ export default class DB {
 	#sql: Sequelize;
 
 	constructor() {
+		console.log(process.env.DATABASE_URL);
 		this.#sql = new Sequelize(process.env.DATABASE_URL, {
-			dialectOptions: {
-				ssl: {
-					require: true,
-					rejectUnauthorized: false,
-				},
-			},
 			logging: false,
 		});
 		this.testConnection();

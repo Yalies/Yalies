@@ -5,7 +5,7 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "npx tsc && node build/yalies-backend/src/index.js",
+    "dev": "npx tsc && node build/yalies-backend/src/index.js",
     "lint": "eslint src/**/*.ts",
     "format": "eslint src/**/*.ts --fix"
   },

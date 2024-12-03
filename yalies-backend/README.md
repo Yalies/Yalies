@@ -1,10 +1,5 @@
 # Yalies Backend
 
-## Getting Started
-- `nvm use`
-- `npm install`
-- `cp .env.template .env`, fill in the values
-
 ## Breaking API changes from V1
 - `/people` fields: `residence`, `building_code`, `entryway`, `floor`, `suite`, `room` removed because they are no longer exposed by the Yale Face Book
 - `/people` field `birthday` removed because it is redundant and locale-specific
