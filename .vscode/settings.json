@@ -1,6 +1,4 @@
 {
-    "typescript.preferences.importModuleSpecifierEnding": "js",
-    "editor.insertSpaces": false,
+	"editor.insertSpaces": false,
     "editor.detectIndentation": false,
-	"javascript.preferences.importModuleSpecifierEnding": "js",
 }

@@ -1,0 +1,13 @@
+@use "../shared.scss";
+
+#search_wrapper {
+	width: auto;
+	display: flex;
+	justify-content: stretch;
+	align-items: center;
+	gap: 10px;
+	input {
+		width: 35vw;
+		border-width: 2px;
+	}
+}

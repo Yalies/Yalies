@@ -113,12 +113,12 @@ export default function PeopleGrid({
 			);
 		});
 	}, [people]);
-	console.log(peopleElems.length)
+
 	return (
 		<InfiniteScroll
 			className={styles.people_grid}
 			dataLength={people.length}
-			next={() => { console.log("Load"); loadMoreFunction(); }}
+			next={loadMoreFunction}
 			hasMore={!hasReachedEnd}
 			loader={<LoadingIcon />}
 		>
