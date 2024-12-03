@@ -21,6 +21,7 @@ export default function HomePage() {
 	const [hasReachedEnd, setHasReachedEnd] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filters, setFilters] = useState<Record<string, string[]> | null>(DEFAULT_FILTERS);
+	const [query, setQuery] = useState("");
 
 	const getPeople = async () => {
 		if(hasReachedEnd) return;
@@ -36,7 +37,6 @@ export default function HomePage() {
 		if(filters.college && filters.college.length > 0) filterObject.college = filters.college;
 		if(filters.major && filters.major.length > 0) filterObject.major = filters.major;
 
-		console.log(filters)
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
 				method: "POST",
@@ -45,6 +45,7 @@ export default function HomePage() {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
+					query: query.length > 0 ? query : null,
 					filters: filterObject,
 					page: currentPage,
 					page_size: 20,
@@ -128,7 +129,7 @@ export default function HomePage() {
 	useEffect(() => { // TODO: Convert to use SWR
 		getPeople();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [filters]);
+	}, [filters, query]);
 
 	if(isUnauthenticated) {
 		return (
@@ -150,13 +151,23 @@ export default function HomePage() {
 		filters.major && filters.major.length === 0
 	);
 
-	const peopleToDisplay = filtersAreDefault ? [
+	const peopleToDisplay = (filtersAreDefault && query.length === 0) ? [
 		...birthdayPeople,
 		...people,
 	] : people;
 
+	const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setQuery(e.target.value);
+	};
+
 	const searchbar = (
-		<Searchbar />
+		<Searchbar
+			value={query}
+			onChange={onQueryChange}
+		/>
 	);
 
 	const setFilterValue = (key: string, newValue: string[]) => {

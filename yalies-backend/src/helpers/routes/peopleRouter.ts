@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
-import { Op, WhereOptions } from "sequelize";
+import { Op, Sequelize, WhereOptions } from "sequelize";
 import CAS from "../cas.js";
 
 export default class PeopleRouter {
@@ -11,7 +11,7 @@ export default class PeopleRouter {
 	};
 
 	getPeople = async (req: Request, res: Response) => {
-		// const query = req.body.query || "";
+		const query = req.body.query || "";
 		const filtersRaw = req.body.filters || {};
 		const page = req.body.page || 0;
 		const pageSize = req.body.page_size || 100;
@@ -22,7 +22,7 @@ export default class PeopleRouter {
 		}
 
 		// Go through filters and construct a where query
-		const where: WhereOptions = {};
+		let where: WhereOptions = {};
 		for(const field of Object.keys(filtersRaw)) {
 			if(!PERSON_ALLOWED_FILTER_FIELDS.includes(field)) {
 				res.status(400).send(`Cannot filter by field ${field}`);
@@ -37,6 +37,27 @@ export default class PeopleRouter {
 			}
 		}
 
+		// TODO: Replace with proper ElasticSearch query
+		if(query) {
+			where = {
+				...where,
+				[Op.or]: [
+					{first_name: {
+						[Op.iLike]: `%${query}%`,
+					}},
+					{last_name: {
+						[Op.iLike]: `%${query}%`,
+					}},
+					Sequelize.where(
+						Sequelize.fn("concat", Sequelize.col("first_name"), " ", Sequelize.col("last_name")),
+						{
+							[Op.iLike]: `%${query}%`,
+						},
+					),
+				],
+			};
+		}
+
 		let people: PersonModel[];
 		try {
 			people = await PersonModel.findAll({
@@ -44,6 +65,7 @@ export default class PeopleRouter {
 				limit: pageSize,
 				offset: page * pageSize,
 				order: [["last_name", "ASC"], ["first_name", "ASC"]],
+				replacements: { query: `%${query}%` },
 			});
 		} catch(e) {
 			console.error(e);
