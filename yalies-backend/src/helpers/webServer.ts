@@ -37,6 +37,8 @@ export default class WebServer {
 				httpOnly: true,
 				// Restrict to HTTPS only in prod
 				secure: process.env.NODE_ENV !== "development",
+				// TODO: THIS IS INSECURE DUE TO CSRF! Once we get domains, do Domain Relaxation
+				sameSite: process.env.NODE_ENV !== "development" ? "none" : false,
 				// 400 days, the max age that Chrome supports
 				maxAge: 34560000,
 			},
