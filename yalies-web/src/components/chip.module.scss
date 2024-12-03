@@ -36,4 +36,7 @@
 			hsl(360, 60%, 90%)
 		);
 	}
+	&.clickable {
+		cursor: pointer;
+	}
 }
