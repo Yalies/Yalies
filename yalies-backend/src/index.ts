@@ -8,5 +8,5 @@ configDotenv();
 if(process.env.NODE_ENV === "development") console.log("******\nRunning in development mode.\n******\n\n");
 
 new CAS();
-new DB();
-new WebServer();
+const db = new DB();
+new WebServer(db);

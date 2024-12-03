@@ -120,7 +120,13 @@ There are some additional services you may see enabled in the Cloud Console, but
 - Yalies Developer Service Account (Under IAM & Admin): Used for the gcloud CLI tool
 	- If you need your key to be added to this service account, ask your team lead
 
+## Maintenance
+- To get a SQL command line, run the following while the Cloud SQL Auth Proxy is running:
+
+```bash
+psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres"
+```
+
 ## Author
 
 Yalies v1 was built by [Erik Boesen](https://github.com/ErikBoesen). Yalies v2 was built and is actively maintained by the [Yale Computer Society](https://yalecomputersociety.org/).
-

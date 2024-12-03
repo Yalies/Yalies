@@ -25,6 +25,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^8.4.0",
+    "connect-session-sequelize": "github:ericyoondotcom/connect-session-sequelize",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

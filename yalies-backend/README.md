@@ -20,6 +20,8 @@
 - **passport**: a library that integrates authentication in Express
 - **passport-cas**: a custom strategy for passport. Passport supports google, twitter, etc authentication, but these people made a custom one that supports CAS
 - **express-session**: a library that allows you to store session data in the database
+- **connect-session-sequelize**: a library that allows you to store session data in the database
+	- We are using Eric Yoon's fork of the library since there was a bug in the original. [See this PR](https://github.com/mweibel/connect-session-sequelize/pull/155)
 
 ### Authentication flow
 1. User tries to go to a protected route

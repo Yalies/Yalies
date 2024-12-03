@@ -6,11 +6,17 @@ import passport from "passport";
 import session from "express-session";
 import cors from "cors";
 import FiltersRouter from "./routes/filtersRouter.js";
+import DB from "./db.js";
+import ConnectSessionSequelize from "connect-session-sequelize";
+
+const SequelizeStore = ConnectSessionSequelize(session.Store);
 
 export default class WebServer {
 	#app: Express;
+	#db: DB;
 
-	constructor() {
+	constructor(db: DB) {
+		this.#db = db;
 		this.initializeExpress();
 		this.initializeSubRouters();
 		this.serve();
@@ -22,10 +28,11 @@ export default class WebServer {
 		this.#app.use(cors({ credentials: true, origin: true }));
 		this.#app.use(express.json());
 		this.#app.use(express.urlencoded({ extended: true }));
+		
 		this.#app.use(session({
 			secret: process.env.SESSION_SECRET,
 			resave: false,
-			saveUninitialized: true,
+			saveUninitialized: false,
 			cookie: { 
 				httpOnly: true,
 				// Restrict to HTTPS only in prod
@@ -33,11 +40,28 @@ export default class WebServer {
 				// 400 days, the max age that Chrome supports
 				maxAge: 34560000,
 			},
-			// TODO: You can add a `store` option here to commit sessions
-			// to a database. Add this once the DB is set up
+			store: this.createSessionStore(),
 		}));
 		this.#app.use(passport.initialize());
 		this.#app.use(passport.session());
+	};
+
+	createSessionStore = () => {
+		const store = new SequelizeStore({
+			db: this.#db.getSql(),
+			table: "session",
+			modelKey: "SessionModel",
+			checkExpirationInterval: 15 * 60 * 1000,
+			expiration: 365 * 24 * 60 * 60 * 1000,
+			extendDefaultFields: (defaults, session) => {
+				return {
+					data: defaults.data,
+					expires: defaults.expires,
+					netid: session.netid,
+				};
+			},
+		});
+		return store;
 	};
 
 	initializeSubRouters = () => {

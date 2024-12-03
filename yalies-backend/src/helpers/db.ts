@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import PersonModel from "./models/PersonModel.js";
+import SessionModel from "./models/SessionModel.js";
 
 export const SEQUELIZE_DEFINITION_OPTIONS = {
 	paranoid: false,
@@ -12,13 +13,14 @@ export default class DB {
 	#sql: Sequelize;
 
 	constructor() {
-		console.log(process.env.DATABASE_URL);
 		this.#sql = new Sequelize(process.env.DATABASE_URL, {
 			logging: false,
 		});
 		this.testConnection();
 		this.registerModels();
 	}
+
+	getSql = () => this.#sql;
 
 	testConnection = async () => {
 		try {
@@ -31,5 +33,6 @@ export default class DB {
 
 	registerModels = () => {
 		PersonModel.initModel(this.#sql);
+		SessionModel.initModel(this.#sql);
 	};
 };

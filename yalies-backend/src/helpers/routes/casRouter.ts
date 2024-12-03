@@ -10,7 +10,10 @@ export default class CasRouter {
 
 	casLogin = (req: Request, res: Response, next: NextFunction) => {
 		const authFunction = passport.authenticate("cas", (err: Error, user: Express.User) => {
-			if(err) return res.status(500).json({ message: "Could not authenticate" });
+			if(err) {
+				console.error(err);
+				return res.status(500).json({ message: "Could not authenticate" });
+			}
 			if(!user) return res.status(401).json({ message: "No user" });
 			
 			return req.logIn(user, async (err) => {
