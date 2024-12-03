@@ -45,7 +45,7 @@ In each directory, a `.env.template` file is provided.
 The file that will be used for development is `.env.development`.
 
 Production environment variables are a bit different:
-- For frontend, the `.env.production` file is used.
+- For frontend, environment variables live in `apphosting.yaml`.
 - For backend, specify them in the Google Cloud console ([docs](https://cloud.google.com/run/docs/configuring/services/environment-variables#setting))
 	- Note that `$PORT` is automatically specified and should not be specified in the console
 
@@ -115,9 +115,9 @@ With the rewrite, Yalies transitioned from a Heroku+AWS tech stack to Google Clo
 - SQL host: Google Cloud SQL
 	- Cloud SQL
 	- PostgreSQL
-- Backend host: Google Cloud App Engine
-	- The App Engine auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
-- Frontend host: Firebase Hosting
+- Backend host: Google Cloud Run
+	- Cloud Run auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
+- Frontend host: Firebase App Hosting
 - Scraper host: Google Compute Engine
 	- We can turn on and off the Compute Engine instance to save money when the scraper's not running
 
@@ -128,8 +128,8 @@ There are some additional services you may see enabled in the Cloud Console, but
 	- If you need your key to be added to this service account, ask your team lead
 
 ### How to deploy
-1. Ask your team lead for the `.env.production` files.
-2. In `yalies-backend`, run `npm run deploy`.
+1. In `yalies-backend`, run `npm run deploy`.
+2. For web, commit to main on Github and rollout from the Firebase console.
 
 ## Maintenance
 - To get a SQL command line, run the following while the Cloud SQL Auth Proxy is running:

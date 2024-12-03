@@ -5,7 +5,7 @@
   "scripts": {
 	"copy-shared": "rm -rf src/yalies-shared && cp -r ../yalies-shared ./src",
     "dev": "npm run copy-shared && next dev",
-    "build": "npm run copy-shared && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
