@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { Person } from "../../../yalies-shared/src/datatypes.js";
+import { Person } from "yalies-shared";
 import styles from "./peoplegrid.module.scss";
 import Chip from "./Chip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
