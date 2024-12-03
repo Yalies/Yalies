@@ -1,7 +1,7 @@
 "use client";
 import PeopleGrid from "@/components/PeopleGrid";
 import { useEffect, useState } from "react";
-import { Person } from "@/yalies-shared/datatypes";
+import { Person } from "../../../yalies-shared/datatypes";
 import Navbar from "@/components/Navbar";
 import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
