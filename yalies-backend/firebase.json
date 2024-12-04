@@ -1,0 +1,14 @@
+{
+	"hosting": {
+		"target": "backend-hosting",
+		"rewrites": [
+			{
+				"source": "**",
+				"run": {
+					"serviceId": "yalies-backend",
+					"region": "us-central1"
+				}
+			}
+		]
+	}
+}

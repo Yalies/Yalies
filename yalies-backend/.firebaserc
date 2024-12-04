@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "yalies"
+  },
+  "targets": {
+    "yalies": {
+      "hosting": {
+        "backend-hosting": [
+          "yalies-backend"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

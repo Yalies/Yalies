@@ -79,7 +79,7 @@ export default class WebServer {
 		const filtersRouter = new FiltersRouter();
 		this.#app.use("/v2/filters", filtersRouter.getRouter());
 
-		this.#app.use("/", (req, res) => {
+		this.#app.get("/", (req, res) => {
 			res.status(200).send(
 				"<html><body><pre>" +
 				"__   __    _ _             _       <br />" +

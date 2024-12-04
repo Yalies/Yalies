@@ -124,6 +124,7 @@ With the rewrite, Yalies transitioned from a Heroku+AWS tech stack to Google Clo
 There are some additional services you may see enabled in the Cloud Console, but these are only used for one-off tasks
 - Google Cloud Storage: upload Postgres dumps to import into Cloud SQL
 - Cloud SQL Admin API: used for Cloud SQL Auth Proxy
+- Firebase Hosting secondary site `yalies-backend`: This is simply a way to [map a custom domain to Cloud Run](https://cloud.google.com/run/docs/mapping-custom-domains#firebase)
 - Virtual Private Cloud
 	- The backend Cloud Run instance is able to talk to the Cloud SQL using an internal, Google-only IP. This is set up in the VPC
 - Yalies Developer Service Account (Under IAM & Admin): Used for the gcloud CLI tool
