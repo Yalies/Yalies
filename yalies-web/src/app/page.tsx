@@ -7,7 +7,7 @@ import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
 import Searchbar from "@/components/Searchbar";
-import { isMobile, MOBILE_WDITH } from "@/consts";
+import { isMobile } from "@/consts";
 
 export default function HomePage() {
 	const DEFAULT_FILTERS = {
