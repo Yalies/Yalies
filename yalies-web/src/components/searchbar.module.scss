@@ -10,4 +10,11 @@
 		width: 35vw;
 		border-width: 2px;
 	}
+
+	@include shared.responsive() {
+		input {
+			margin: 25px 20px 0 20px;
+			width: 100%;
+		}
+	}
 }

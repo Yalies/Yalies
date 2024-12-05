@@ -23,6 +23,11 @@ export default function HomePage() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filters, setFilters] = useState<Record<string, string[]> | null>(DEFAULT_FILTERS);
 	const [query, setQuery] = useState("");
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
 	const getPeople = async () => {
 		if(hasReachedEnd) return;
@@ -185,11 +190,12 @@ export default function HomePage() {
 		setFilters(DEFAULT_FILTERS);
 	};
 
-	if(isMobile()) return (
+	if(isMobile() && isClient) return (
 		<>
 			<Topbar>
 				<Navbar isAuthenticated={true} />
 			</Topbar>
+			{searchbar}
 			<Filters
 				filters={filters || {}}
 				setFilterValue={setFilterValue}
