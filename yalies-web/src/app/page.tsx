@@ -7,6 +7,7 @@ import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
 import Searchbar from "@/components/Searchbar";
+import { isMobile, MOBILE_WDITH } from "@/consts";
 
 export default function HomePage() {
 	const DEFAULT_FILTERS = {
@@ -183,6 +184,25 @@ export default function HomePage() {
 		setCurrentPage(0);
 		setFilters(DEFAULT_FILTERS);
 	};
+
+	if(isMobile()) return (
+		<>
+			<Topbar>
+				<Navbar isAuthenticated={true} />
+			</Topbar>
+			<Filters
+				filters={filters || {}}
+				setFilterValue={setFilterValue}
+				reset={reset}
+				filtersAreDefault={filtersAreDefault}
+			/>
+			<PeopleGrid
+				people={peopleToDisplay}
+				loadMoreFunction={getPeople}
+				hasReachedEnd={hasReachedEnd}
+			/>
+		</>
+	);
 
 	return (
 		<>

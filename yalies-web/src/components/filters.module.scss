@@ -7,17 +7,23 @@
 	align-items: center;
 	justify-content: flex-start;
 	gap: 20px;
+
+	@include shared.responsive() {
+		margin: 30px;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
 }
 
 .reset {
-	background-color: #dc3545AA;
-	color: #FFF;
+	background-color: transparentize($color: shared.$destructive-color, $amount: 0.3);
+	color: #FFFFFF;
 	font-size: 10px;
 	padding: 5px;
-	border-radius: 7px;
+	border-radius: shared.$border-radius-standard;
 	border: none;
 	&.active {
 		cursor: pointer;
-		background-color: #dc3545;
+		background-color: shared.$destructive-color;
 	}
 }

@@ -21,4 +21,12 @@
 	button {
 		margin-top: 15px;
 	}
+	@include shared.responsive() {
+		padding: 0 20px;
+		margin-top: 5vh;
+		flex-direction: column;
+		img {
+			width: 100%;
+		}
+	}
 }
