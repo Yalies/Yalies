@@ -187,7 +187,7 @@ export default function HomePage() {
 	return (
 		<>
 			<Topbar>
-				<Navbar middleContent={searchbar} />
+				<Navbar middleContent={searchbar} isAuthenticated={true} />
 				<Filters
 					filters={filters || {}}
 					setFilterValue={setFilterValue}

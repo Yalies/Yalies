@@ -1,3 +1,5 @@
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./dropdown.module.scss";
 import { faX, faCaretUp } from "@fortawesome/free-solid-svg-icons";

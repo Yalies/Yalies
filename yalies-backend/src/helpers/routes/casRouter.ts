@@ -5,6 +5,7 @@ export default class CasRouter {
 	getRouter = () => {
 		const router = express.Router();
 		router.get("/", this.casLogin);
+		router.get("/logout", this.logout);
 		return router;
 	};
 
@@ -22,5 +23,13 @@ export default class CasRouter {
 			});
 		});
 		authFunction(req, res, next);
+	};
+
+	logout = (req: Request, res: Response) => {
+		req.session.destroy(() => {
+			req.logout({}, () => {
+				res.redirect(process.env.FRONTEND_URL + "/");
+			});
+		});
 	};
 };
