@@ -42,14 +42,25 @@ export default function Filters({
 		}
 		const filterOptions: Record<string, unknown[]> = await response?.json();
 
-		const filterToDropdownOption = (options: unknown[]) => {
+		const filterToDropdownOption = (options: unknown[], sort?: (a: DropdownOption, b: DropdownOption) => number): DropdownOption[] => {
 			return (options as string[])
 				.map((option) => ({ label: option.toString(), value: option.toString() }))
-				.sort((a, b) => a.label.localeCompare(b.label));
+				.sort(sort || ((a, b) => a.label.localeCompare(b.label)));
 		};
 
-		setSchoolOptions(filterToDropdownOption(filterOptions["school"]));
-		setYearOptions(filterToDropdownOption(filterOptions["year"]));
+		const schoolSortFn = (a: DropdownOption, b: DropdownOption) => {
+			if(a.label === "Yale College") return -1;
+			if(b.label === "Yale College") return 1;
+			return a.label.localeCompare(b.label);
+		};
+		const yearSortFn = (a: DropdownOption, b: DropdownOption) => {
+			const stringA = a.label.toString();
+			const stringB = b.label.toString();
+			return -1 * stringA.localeCompare(stringB);
+		}
+
+		setSchoolOptions(filterToDropdownOption(filterOptions["school"], schoolSortFn));
+		setYearOptions(filterToDropdownOption(filterOptions["year"], yearSortFn));
 		setCollegeOptions(filterToDropdownOption(filterOptions["college"]));
 		setMajorOptions(filterToDropdownOption(filterOptions["major"]));
 	}, []);
