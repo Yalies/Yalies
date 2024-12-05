@@ -160,6 +160,11 @@ export default class PersonModel extends Model {
 	}
 
 	public toSanitizedObject(): Person {
+		let addressSanitized = this.address;
+		if(addressSanitized != null) {
+			const split = addressSanitized.split("\n");
+			addressSanitized = split[split.length - 1]; // Only display the last line of the address
+		}
 		// Only return fields that are not null
 		return {
 			...this.netid != null && 				{ netid: this.netid },
@@ -177,7 +182,7 @@ export default class PersonModel extends Model {
 			...this.pronouns != null && 			{ pronouns: this.pronouns },
 			...this.phonetic_name != null && 		{ phonetic_name: this.phonetic_name },
 			...this.name_recording != null && 		{ name_recording: this.name_recording },
-			...this.address != null && 				{ address: this.address },
+			...this.address != null && 				{ address: addressSanitized },
 			...this.school != null && 				{ school: this.school },
 			...this.school_code != null && 			{ school_code: this.school_code },
 			...this.year != null && 				{ year: this.year },
