@@ -4,6 +4,7 @@
 - `/people` fields: `residence`, `building_code`, `entryway`, `floor`, `suite`, `room` removed because they are no longer exposed by the Yale Face Book
 - `/people` field `birthday` removed because it is redundant and locale-specific
 - `/people` option `page` is now zero-indexed; i.e. first page starts at `page: 0`
+- `/people` page size now defaults to 100; page size must now be between 1 and 100 inclusive
 
 ## SQL details
 - We're using `sequelize` library to interact with the database
