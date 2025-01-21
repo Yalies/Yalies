@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import CAS from "../cas.js";
+import { Fn } from "sequelize/types/utils.js";
 
 export default class PeopleRouter {
 	getRouter = () => {
@@ -9,6 +10,16 @@ export default class PeopleRouter {
 		router.post("/", CAS.requireAuthentication, this.getPeople);
 		return router;
 	};
+
+	constructSimilarityQuery = (fn: Fn | string, query: string) =>
+		Sequelize.where(
+			Sequelize.fn(
+				"similarity",
+				fn,
+				query,
+			),
+			{ [Op.gt]: 0.4 },
+		);
 
 	getPeople = async (req: Request, res: Response) => {
 		const query = req.body.query || "";
@@ -37,22 +48,25 @@ export default class PeopleRouter {
 			}
 		}
 
-		// TODO: Replace with proper ElasticSearch query
-		if(query) {
+		if(query) { // Fuzzy search using trigrams
 			where = {
 				...where,
-				[Op.or]: [
-					{first_name: {
-						[Op.iLike]: `%${query}%`,
-					}},
-					{last_name: {
-						[Op.iLike]: `%${query}%`,
-					}},
-					Sequelize.where(
-						Sequelize.fn("concat", Sequelize.col("first_name"), " ", Sequelize.col("last_name")),
-						{
-							[Op.iLike]: `%${query}%`,
-						},
+				[Op.or]: [ // match `first last` OR `first` OR `last`
+					this.constructSimilarityQuery(
+						Sequelize.fn(
+							"first_last_name",
+							Sequelize.col("first_name"),
+							Sequelize.col("last_name"),
+						),
+						query,
+					),
+					this.constructSimilarityQuery(
+						"first_name",
+						query,
+					),
+					this.constructSimilarityQuery(
+						"last_name",
+						query,
 					),
 				],
 			};

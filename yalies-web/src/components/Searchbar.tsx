@@ -4,9 +4,11 @@ import styles from "./searchbar.module.scss";
 export default function Searchbar({
 	value,
 	onChange,
+	onSubmit,
 }: {
 	value: string;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onSubmit: () => void;
 }) {
 	return (
 		<div id={styles.search_wrapper}>
@@ -14,6 +16,7 @@ export default function Searchbar({
 				placeholder="Search Yalies"
 				value={value}
 				onChange={onChange}
+				onSubmit={onSubmit}
 			/>
 		</div>
 	)
