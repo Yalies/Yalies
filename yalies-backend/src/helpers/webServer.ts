@@ -40,7 +40,8 @@ export default class WebServer {
 				// TODO: THIS IS INSECURE DUE TO CSRF! Once we get domains, do Domain Relaxation
 				sameSite: process.env.NODE_ENV !== "development" ? "none" : false,
 				// 400 days, the max age that Chrome supports
-				maxAge: 34560000,
+				// Note that the cookie API uses secs, while express uses millis
+				maxAge: 34560000 * 1000,
 			},
 			store: this.createSessionStore(),
 		}));
@@ -54,8 +55,8 @@ export default class WebServer {
 			table: "session",
 			modelKey: "SessionModel",
 			checkExpirationInterval: 15 * 60 * 1000,
-			expiration: 365 * 24 * 60 * 60 * 1000,
 			extendDefaultFields: (defaults, session) => {
+				console.log("NETID: " + session.netid);
 				return {
 					data: defaults.data,
 					expires: defaults.expires,
