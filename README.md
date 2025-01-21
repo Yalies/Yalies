@@ -132,7 +132,7 @@ There are some additional services you may see enabled in the Cloud Console, but
 
 ### How to deploy
 1. In `yalies-backend`, run `npm run deploy`.
-2. For web, commit to main on Github and rollout from the Firebase console.
+2. In `yalies-web`, run `npm run deploy`.
 
 ## Maintenance
 - To get a SQL command line, run the following while the Cloud SQL Auth Proxy is running:
