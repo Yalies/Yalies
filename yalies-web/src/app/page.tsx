@@ -22,6 +22,8 @@ export default function HomePage() {
 	const [hasReachedEnd, setHasReachedEnd] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [filters, setFilters] = useState<Record<string, string[]> | null>(DEFAULT_FILTERS);
+	// query <- searchboxText on enter key
+	const [searchboxText, setSearchboxText] = useState("");
 	const [query, setQuery] = useState("");
 	const [isClient, setIsClient] = useState(false);
 
@@ -163,16 +165,21 @@ export default function HomePage() {
 	] : people;
 
 	const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchboxText(e.target.value);
+	};
+	
+	const onSubmit = () => {
 		setPeople([]);
 		setHasReachedEnd(false);
 		setCurrentPage(0);
-		setQuery(e.target.value);
-	};
+		setQuery(searchboxText);
+	}
 
 	const searchbar = (
 		<Searchbar
-			value={query}
+			value={searchboxText}
 			onChange={onQueryChange}
+			onSubmit={onSubmit}
 		/>
 	);
 

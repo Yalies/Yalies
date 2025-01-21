@@ -115,6 +115,7 @@ With the rewrite, Yalies transitioned from a Heroku+AWS tech stack to Google Clo
 - SQL host: Google Cloud SQL
 	- Cloud SQL
 	- PostgreSQL
+	- Extensions: `pg_trgm`
 - Backend host: Google Cloud Run
 	- Cloud Run auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
 - Frontend host: Firebase Hosting (with [experimental Next.js deployment](https://firebase.google.com/docs/hosting/frameworks/nextjs))
