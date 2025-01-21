@@ -11,10 +11,10 @@ export default function Input({
 	value: string;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	autofocus?: boolean;
-	onSubmit: () => void;
+	onSubmit?: () => void;
 }) {
 	const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if(e.key === "Enter") onSubmit();
+		if(e.key === "Enter") onSubmit && onSubmit();
 	};
 
 	return (
