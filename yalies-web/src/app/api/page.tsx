@@ -10,6 +10,7 @@ import Button from "@/components/Button";
 import { ApiKey } from "../../../../yalies-shared/datatypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { sendGAEvent } from "@next/third-parties/google";
 
 const logoFont = Lexend_Deca({ subsets: ["latin"] });
 
@@ -84,6 +85,7 @@ export default function APIPage() {
 		}
 		const key = await response.json();
 		setKeys([...keys, key]);
+		sendGAEvent("event", "api-key-create");
 	};
 
 	const revokeApiKey = async (id: number) => {
@@ -110,6 +112,7 @@ export default function APIPage() {
 			return;
 		}
 		fetchApiKeys();
+		sendGAEvent("event", "api-key-revoke");
 	};
 
 	useEffect(() => {

@@ -8,6 +8,7 @@ import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
 import Searchbar from "@/components/Searchbar";
 import { isMobile } from "@/consts";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export default function HomePage() {
 	const DEFAULT_FILTERS = {
@@ -191,6 +192,7 @@ export default function HomePage() {
 		setHasReachedEnd(false);
 		setCurrentPage(0);
 		setQuery(searchboxText);
+		sendGAEvent("event", "search", { query: searchboxText });
 	}
 
 	const searchbar = (

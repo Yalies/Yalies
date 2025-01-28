@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-	"deploy": "npm run build && firebase deploy --only hosting"
+    "deploy": "npm run build && firebase deploy --only hosting"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@next/third-parties": "^15.1.6",
     "cookies-next": "^4.2.1",
     "next": "14.2.7",
     "react": "^18",
