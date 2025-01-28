@@ -54,3 +54,11 @@ export type Person = {
     education?: string;
     publications?: string;
 };
+
+export type ApiKey = {
+	id: number;
+	description: string;
+	created_on: Date;
+	uses_count: number;
+	key?: string;
+};

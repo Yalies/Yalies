@@ -8,6 +8,7 @@ import cors from "cors";
 import FiltersRouter from "./routes/filtersRouter.js";
 import DB from "./db.js";
 import ConnectSessionSequelize from "connect-session-sequelize";
+import APIKeyRouter from "./routes/apiKeyRouter.js";
 
 const SequelizeStore = ConnectSessionSequelize(session.Store);
 
@@ -79,6 +80,9 @@ export default class WebServer {
 		
 		const filtersRouter = new FiltersRouter();
 		this.#app.use("/v2/filters", filtersRouter.getRouter());
+
+		const apiKeyRouter = new APIKeyRouter();
+		this.#app.use("/v2/api-keys", apiKeyRouter.getRouter());
 
 		this.#app.get("/", (req, res) => {
 			res.status(200).send(

@@ -3,3 +3,11 @@
 #api_page {
 	@include shared.info_page();
 }
+
+#key_table {
+	width: 100%;
+	td, th {
+		text-align: left;
+		padding: 8px;
+	}
+}

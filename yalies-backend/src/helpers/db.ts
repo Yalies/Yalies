@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import PersonModel from "./models/PersonModel.js";
 import SessionModel from "./models/SessionModel.js";
+import APIKeyModel from "./models/APIKeyModel.js";
 
 export const SEQUELIZE_DEFINITION_OPTIONS = {
 	paranoid: false,
@@ -58,5 +59,6 @@ export default class DB {
 	registerModels = () => {
 		PersonModel.initModel(this.#sql);
 		SessionModel.initModel(this.#sql);
+		APIKeyModel.initModel(this.#sql);
 	};
 };
