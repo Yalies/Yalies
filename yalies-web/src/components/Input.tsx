@@ -6,12 +6,14 @@ export default function Input({
 	onChange,
 	autofocus,
 	onSubmit,
+	disabled,
 }: {
-	placeholder: string;
-	value: string;
-	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	placeholder?: string;
+	value?: string;
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	autofocus?: boolean;
 	onSubmit?: () => void;
+	disabled?: boolean;
 }) {
 	const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if(e.key === "Enter") onSubmit && onSubmit();
@@ -19,7 +21,8 @@ export default function Input({
 
 	return (
 		<input
-			className={styles.input}
+			disabled={disabled}
+			className={`${styles.input} ${disabled ? styles.disabled : ""}`}
 			placeholder={placeholder}
 			value={value}
 			onChange={onChange}

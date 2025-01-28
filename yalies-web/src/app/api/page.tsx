@@ -8,6 +8,8 @@ import { Lexend_Deca } from "next/font/google";
 import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import { ApiKey } from "../../../../yalies-shared/datatypes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const logoFont = Lexend_Deca({ subsets: ["latin"] });
 
@@ -84,6 +86,32 @@ export default function APIPage() {
 		setKeys([...keys, key]);
 	};
 
+	const revokeApiKey = async (id: number) => {
+		let response;
+		try {
+			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/api-keys/revoke`, {
+				method: "POST",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id }),
+			});
+		} catch(e) {
+			console.error(e);
+			return;
+		}
+		if(!response) {
+			console.error("No response from server");
+			return;
+		}
+		if(!response.ok) {
+			console.error("Error revoking API key", response.status, response.statusText, await response.text());
+			return;
+		}
+		fetchApiKeys();
+	};
+
 	useEffect(() => {
 		fetchApiKeys();
 	}, []);
@@ -109,7 +137,16 @@ export default function APIPage() {
 			<tr key={key.id}>
 				<td>{key.description}</td>
 				<td>{key.uses_count}</td>
-				<td>{key.key || "Only shown once"}</td>
+				<td className={styles.key_cell}>
+					{
+						key.key ? (
+							<Input disabled value={key.key} />
+						) : "Only shown once"
+					}
+				</td>
+				<td className={styles.revoke_cell} onClick={() => revokeApiKey(key.id)}>
+					<FontAwesomeIcon icon={faTrash} />
+				</td>
 			</tr>
 		);
 	});
@@ -153,12 +190,14 @@ export default function APIPage() {
 					For more information, see <a href="https://blog.gitguardian.com/secure-your-secrets-with-env/" target="_blank">Secure Your Secrets with .env</a>.
 				</p>
 				{keyTable}
-				<Input
-					placeholder="Key description"
-					value={description}
-					onChange={e => setDescription(e.target.value)}
-				/>
-				<Button onClick={createApiKey}>Create key</Button>
+				<div id={styles.new_key_form}>
+					<Input
+						placeholder="Key description"
+						value={description}
+						onChange={e => setDescription(e.target.value)}
+					/>
+					<Button onClick={createApiKey}>Create key</Button>
+				</div>
 			</div>
 		</>
 	);

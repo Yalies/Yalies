@@ -9,4 +9,8 @@
 	color: shared.$foreground-color;
 	border: solid 1px shared.$border-color;
 	padding: 10px 15px;
+
+	&.disabled {
+		background-color: shared.$background-color-disabled;
+	}
 }

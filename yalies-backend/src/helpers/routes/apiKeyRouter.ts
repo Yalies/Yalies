@@ -59,7 +59,25 @@ export default class APIKeyRouter {
 	};
 
 	revokeApiKey = async (req: Request, res: Response) => {
-		res.send("pong");
+		const user = req.user as RequestUser;
+		const { netId } = user;
+		const { id } = req.body;
+
+		if(!id) return res.status(400).send("ID is required");
+
+		try {
+			await APIKeyModel.destroy({
+				where: {
+					id,
+					owner_netid: netId,
+				},
+			});
+		} catch(e) {
+			console.error(e);
+			res.status(500).send("Error revoking API key");
+			return;
+		}
+		res.status(200).end();
 	};
 
 	listApiKeys = async (req: Request, res: Response) => {
