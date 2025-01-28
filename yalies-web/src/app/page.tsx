@@ -36,14 +36,31 @@ export default function HomePage() {
 		if(filters === null) return;
 		let response;
 
+		let queryActual = query;
 		// Construct the filter object.
 		// We have to do this because Sequelize treats empty array
 		// as only allowing null values to pass through the filter
-		const filterObject: Record<string, string[]> = {};
+		let filterObject: Record<string, string[]> = {};
 		if(filters.year && filters.year.length > 0) filterObject.year = filters.year;
 		if(filters.school && filters.school.length > 0) filterObject.school = filters.school;
 		if(filters.college && filters.college.length > 0) filterObject.college = filters.college;
 		if(filters.major && filters.major.length > 0) filterObject.major = filters.major;
+
+		if(queryActual.match(/^[a-z]{2,}\d{1,4}$/i)) {
+			// This is a netID
+			queryActual = "";
+			filterObject = {
+				netid: [query],
+				...filterObject,
+			};
+		} else if(queryActual.match(/^\d{8}$/i)) {
+			// This is a UPI
+			queryActual = "";
+			filterObject = {
+				upi: [query],
+				...filterObject,
+			};
+		}
 
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
@@ -53,7 +70,7 @@ export default function HomePage() {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					query: query.length > 0 ? query : null,
+					query: queryActual.length > 0 ? queryActual : null,
 					filters: filterObject,
 					page: currentPage,
 					page_size: 20,
@@ -169,6 +186,7 @@ export default function HomePage() {
 	};
 	
 	const onSubmit = () => {
+		if(searchboxText === query) return;
 		setPeople([]);
 		setHasReachedEnd(false);
 		setCurrentPage(0);
