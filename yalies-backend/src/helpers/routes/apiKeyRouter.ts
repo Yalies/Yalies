@@ -7,9 +7,9 @@ import { generateApiKey } from "../util.js";
 export default class APIKeyRouter {
 	getRouter = () => {
 		const router = express.Router();
-		router.post("/create", CAS.requireAuthentication, this.generateApiKey);
-		router.post("/revoke", CAS.requireAuthentication, this.revokeApiKey);
-		router.get("/list", CAS.requireAuthentication, this.listApiKeys);
+		router.post("/create", CAS.requireAuthenticationSessionOnly, this.generateApiKey);
+		router.post("/revoke", CAS.requireAuthenticationSessionOnly, this.revokeApiKey);
+		router.get("/list", CAS.requireAuthenticationSessionOnly, this.listApiKeys);
 		return router;
 	};
 
@@ -17,13 +17,12 @@ export default class APIKeyRouter {
 		const description = req.body.description || "";
 		if(!description) return res.status(400).send("Description is required");
 
-		const user = req.user as RequestUser;
-		const { netId } = user;
+		const netid = req.netid;
 
 		const key = generateApiKey();
 		
 		const newKey = APIKeyModel.build({
-			owner_netid: netId,
+			owner_netid: netid,
 			created_on: new Date(),
 			description,
 			key,
@@ -59,8 +58,7 @@ export default class APIKeyRouter {
 	};
 
 	revokeApiKey = async (req: Request, res: Response) => {
-		const user = req.user as RequestUser;
-		const { netId } = user;
+		const netid = req.netid;
 		const { id } = req.body;
 
 		if(!id) return res.status(400).send("ID is required");
@@ -69,7 +67,7 @@ export default class APIKeyRouter {
 			await APIKeyModel.destroy({
 				where: {
 					id,
-					owner_netid: netId,
+					owner_netid: netid,
 				},
 			});
 		} catch(e) {
@@ -81,13 +79,12 @@ export default class APIKeyRouter {
 	};
 
 	listApiKeys = async (req: Request, res: Response) => {
-		const user = req.user as RequestUser;
-		const { netId } = user;
+		const netid = req.netid;
 
 		let keys: APIKeyModel[];
 		try {
 			keys = await APIKeyModel.findAll({
-				where: { owner_netid: netId },
+				where: { owner_netid: netid },
 			});
 		} catch(e) {
 			console.error(e);

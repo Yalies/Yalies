@@ -116,8 +116,6 @@ export default function APIPage() {
 		fetchApiKeys();
 	}, []);
 
-	console.log(keys);
-
 	if(isUnauthenticated) {
 		return (
 			<>

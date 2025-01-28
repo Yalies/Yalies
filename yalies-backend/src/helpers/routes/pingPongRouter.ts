@@ -6,6 +6,8 @@ export default class PingPongRouter {
 		const router = express.Router();
 		router.get("/", this.pingPong);
 		router.get("/protected", CAS.requireAuthentication, this.pingPong);
+		router.get("/session-only", CAS.requireAuthenticationSessionOnly, this.pingPong);
+		router.get("/api-only", CAS.requireAuthenticationApiOnly, this.pingPong);
 		return router;
 	};
 

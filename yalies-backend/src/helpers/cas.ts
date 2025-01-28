@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy } from "passport-cas";
 import PersonModel from "./models/PersonModel.js";
 import { RequestUser } from "./types.js";
+import APIKeyModel from "./models/APIKeyModel.js";
 
 export default class CAS {
 	constructor() {
@@ -30,9 +31,31 @@ export default class CAS {
 	};
 
 	static requireAuthentication = async (req: Request, res: Response, next: NextFunction) => {
-		if (!req.isAuthenticated() || !req.user) return res.status(401).json({ message: "Unauthorized" });
+		if(req.headers.authorization) {
+			return this.authenticateWithBearerToken(req, res, next);
+		}
+		return this.authenticateWithSession(req, res, next);
+	};
+
+	static requireAuthenticationSessionOnly = async (req: Request, res: Response, next: NextFunction) => {
+		if(req.headers.authorization) {
+			return res.status(403).send("This route is inaccessible to the public API. If you meant to authenticate with a session, remove the Authorization header.");
+		}
+		return this.authenticateWithSession(req, res, next);
+	};
+
+	static requireAuthenticationApiOnly = async (req: Request, res: Response, next: NextFunction) => {
+		if(!req.headers.authorization) {
+			return res.status(401).send("Must supply an Authorization header for this API-only route");
+		}
+		return this.authenticateWithBearerToken(req, res, next);
+	};
+
+	static authenticateWithSession = async (req: Request, res: Response, next: NextFunction) => {
+		if (!req.isAuthenticated() || !req.user) return res.status(401).send("Unauthorized");
 		const user = req.user as RequestUser;
-		if(!user.netId) return res.status(401).json({ message: "No netId associated with logged-in user" });
+		if(!user.netId) return res.status(401).send("No netId associated with logged-in user");
+		req.netid = user.netId;
 
 		let person: PersonModel | null;
 		try {
@@ -46,6 +69,35 @@ export default class CAS {
 		if(!person) return res.status(403).send("Not in directory");
 		// TODO: Decide if we want to only allow YC students
 		
+		return next();
+	};
+
+	static authenticateWithBearerToken = async (req: Request, res: Response, next: NextFunction) => {
+		const authorization = req.headers.authorization;
+
+		if(!authorization.startsWith("Bearer ")) return res.status(401).send("Must prepend API key with `Bearer `");
+		const token = authorization?.split(" ")[1];
+		if(!token) return res.status(401).send("No token provided");
+		
+		let key: APIKeyModel | null;
+		try {
+			key = await APIKeyModel.findOne({
+				where: { key: token },
+			});
+		} catch(e) {
+			console.error(e);
+			return res.status(500).send("Error fetching API key while authenticating");
+		}
+		if(!key) return res.status(401).send("Invalid bearer token");
+		req.netid = key.owner_netid;
+
+		try {
+			await key.increment("uses_count");
+		} catch(e) {
+			console.error(e);
+			return res.status(500).send("Error incrementing API key uses count");
+		}
+
 		return next();
 	};
 }

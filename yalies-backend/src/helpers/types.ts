@@ -7,3 +7,9 @@ declare module "express-session" {
 		netid?: string;
 	}
 }
+
+declare module "express" {
+	interface Request {
+		netid?: string;
+	}
+};

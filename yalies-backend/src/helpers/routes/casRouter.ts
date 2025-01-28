@@ -14,13 +14,13 @@ export default class CasRouter {
 		const authFunction = passport.authenticate("cas", (err: Error, user: Express.User) => {
 			if(err) {
 				console.error(err);
-				return res.status(500).json({ message: "Could not authenticate" });
+				return res.status(500).send("Could not authenticate");
 			}
-			if(!user) return res.status(401).json({ message: "No user" });
+			if(!user) return res.status(401).send("No user");
 			const userWithData = user as RequestUser;
 
 			return req.logIn(user, async (err) => {
-				if(err) return res.status(500).json({ message: "Could not log in" });
+				if(err) return res.status(500).send("Could not log in");
 				req.session.netid = userWithData.netId;
 				return res.redirect(process.env.FRONTEND_URL + "/");
 			});
