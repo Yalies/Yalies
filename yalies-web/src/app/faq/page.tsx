@@ -19,10 +19,11 @@ export default function FAQPage() {
 					no protected information is revealed. NetIDs, UPIs, and emails come from the <a href="https://directory.yale.edu/">Yale Directory</a>, 
 					and everything else comes from the <a href="https://students.yale.edu/facebook/">Yale Face Book</a>.
 				</p>
-				<h3>Removing information from the Face Book and Yalies</h3>
+				<h3>Removing information from the Face Book</h3>
 				<p>
-					We&apos;ve made a tool to guide you through the process of swiftly removing your data 
-					from the Yale Face Book and Yalies. <a href="https://yalies.io/remove_data">Access the tool here.</a>
+					To remove your data from the Face Book, first <a href="https://students.yale.edu/facebook/">log in to the Face Book</a>.
+					Click <b>Edit</b> on the top, and select all fields you want to hide.
+					Your changes will be reflected on Yalies during the next data update, usually after a week.
 				</p>
 				<h3>Removing information from the Yale Directory</h3>
 				<p>

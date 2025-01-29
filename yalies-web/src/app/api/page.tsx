@@ -199,6 +199,9 @@ export default function APIPage() {
 					/>
 					<Button onClick={createApiKey}>Create key</Button>
 				</div>
+				<h2>Documentation</h2>
+				<p>View the <a href="https://github.com/Yalies/Yalies/wiki" target="_blank">API documentation on Github Wiki</a>.</p>
+				<p>Migrating from V1? View the <a href="https://github.com/Yalies/Yalies/wiki/V1-%E2%80%90--V2-Migration-Guide" target="_blank">migration guide</a>.</p>
 			</div>
 		</>
 	);
