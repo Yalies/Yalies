@@ -91,6 +91,18 @@ export default class CAS {
 		if(!key) return res.status(401).send("Invalid bearer token");
 		req.netid = key.owner_netid;
 
+		if(!req.secure && process.env.NODE_ENV !== "development") {
+			// Delete the API key!!!!
+			try {
+				await key.destroy();
+			} catch(e) {
+				console.error(e);
+				res.status(500).send("Internal server error");
+				return;
+			}
+			return res.status(401).send("API keys must be used over HTTPS. Your key has been revoked for security reasons; please generate a new one.");
+		}
+
 		try {
 			await key.increment("uses_count");
 		} catch(e) {
