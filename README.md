@@ -150,4 +150,4 @@ psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres"
 
 Yalies v1 was built by [Erik Boesen](https://github.com/ErikBoesen). Yalies v2 was built and is actively maintained by the [Yale Computer Society](https://yalecomputersociety.org/).
 
-Eric Sun
+<!-- Eric Sun -->
