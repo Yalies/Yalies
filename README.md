@@ -1,7 +1,9 @@
 # Yalies
+
 ✨ The Yale Search Engine
 
 ## What is this repo?
+
 Code in this repo is not in production yet. This is a repository for the rewrite of Yalies in NextJS/NodeJS.
 
 If you are a Yale student, please view [the RFC](https://docs.google.com/document/d/1r285wAVGrB8fHPuPhyfj-cS82dlf8eJQpG0bjwicp0o/edit?usp=sharing) outlining the rewrite.
@@ -9,13 +11,16 @@ If you are a Yale student, please view [the RFC](https://docs.google.com/documen
 ## Getting Started
 
 ### Project Structure
+
 This project contains four directories:
+
 - `yalies-web`
 - `yalies-backend`
 - `yalies-scraper`
 - `yalies-shared`
 
 ### Windows Developers
+
 If you're on Windows, everything's easier if you install Windows Subsystem for Linux (WSL). You can follow the instructions [here](https://docs.microsoft.com/en-us/windows/wsl/install).
 
 Please install WSL. Going forwards, assume you will type all commands into your WSL CLI, and not your Windows Powershell.
@@ -45,9 +50,10 @@ In each directory, a `.env.template` file is provided.
 The file that will be used for development is `.env.development`.
 
 Production environment variables are a bit different:
+
 - For frontend, the `.env.production` file is used.
 - For backend, specify them in the Google Cloud console ([docs](https://cloud.google.com/run/docs/configuring/services/environment-variables#setting))
-	- Note that `$PORT` is automatically specified and should not be specified in the console
+  - Note that `$PORT` is automatically specified and should not be specified in the console
 
 ### Cloud SQL Auth Proxy
 
@@ -92,50 +98,55 @@ Run `cp .env.template .env.development`. Fill in the values, which should have b
 `npm run dev` to start the development server.
 
 ## Tech Stack
+
 In an effort to keep this project maintainable by future Y/CS members and team leads, here is an explanation of the entire tech stack used by Yalies.
 
 - Frontend
-	- [Next.js](https://nextjs.org/): React framework with support for server-side rendering
-		- This app uses the new NextJS App Router, as opposed to the old Page Router.
-		- Read about server-side rendering and [Server Components](https://nextjs.org/docs/app/building-your-application/rendering/server-components)
-	- Sass's [SCSS syntax](https://sass-lang.com/documentation/) for cleaner stylesheets
-	- ESLint to enforce style
+  - [Next.js](https://nextjs.org/): React framework with support for server-side rendering
+    - This app uses the new NextJS App Router, as opposed to the old Page Router.
+    - Read about server-side rendering and [Server Components](https://nextjs.org/docs/app/building-your-application/rendering/server-components)
+  - Sass's [SCSS syntax](https://sass-lang.com/documentation/) for cleaner stylesheets
+  - ESLint to enforce style
 - Backend
-	- NodeJS Express
-		- We decided to use classes and OOP principles to structure the backend. Please follow existing code patterns.
-	- Express-Session, Passport, and Passport-CAS for authentication
-	- Sequelize as a SQL variant-agnostic ORM
-	- ESLint to enforce style
+  - NodeJS Express
+    - We decided to use classes and OOP principles to structure the backend. Please follow existing code patterns.
+  - Express-Session, Passport, and Passport-CAS for authentication
+  - Sequelize as a SQL variant-agnostic ORM
+  - ESLint to enforce style
 - Shared
-	- Types and helper functions to be shared between backend and frontend
+  - Types and helper functions to be shared between backend and frontend
 
 ## Deployment
+
 With the rewrite, Yalies transitioned from a Heroku+AWS tech stack to Google Cloud.
 
 - SQL host: Google Cloud SQL
-	- Cloud SQL
-	- PostgreSQL
-	- Extensions: `pg_trgm`
+  - Cloud SQL
+  - PostgreSQL
+  - Extensions: `pg_trgm`
 - Backend host: Google Cloud Run
-	- Cloud Run auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
+  - Cloud Run auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
 - Frontend host: Firebase Hosting (with [experimental Next.js deployment](https://firebase.google.com/docs/hosting/frameworks/nextjs))
 - Scraper host: Google Compute Engine
-	- We can turn on and off the Compute Engine instance to save money when the scraper's not running
+  - We can turn on and off the Compute Engine instance to save money when the scraper's not running
 
 There are some additional services you may see enabled in the Cloud Console, but these are only used for one-off tasks
+
 - Google Cloud Storage: upload Postgres dumps to import into Cloud SQL
 - Cloud SQL Admin API: used for Cloud SQL Auth Proxy
 - Firebase Hosting secondary site `yalies-backend`: This is simply a way to [map a custom domain to Cloud Run](https://cloud.google.com/run/docs/mapping-custom-domains#firebase)
 - Virtual Private Cloud
-	- The backend Cloud Run instance is able to talk to the Cloud SQL using an internal, Google-only IP. This is set up in the VPC
+  - The backend Cloud Run instance is able to talk to the Cloud SQL using an internal, Google-only IP. This is set up in the VPC.
 - Yalies Developer Service Account (Under IAM & Admin): Used for the gcloud CLI tool
-	- If you need your key to be added to this service account, ask your team lead
+  - If you need your key to be added to this service account, ask your team lead
 
 ### How to deploy
+
 1. In `yalies-backend`, run `npm run deploy`.
 2. In `yalies-web`, run `npm run deploy`.
 
 ## Maintenance
+
 - To get a SQL command line, run the following while the Cloud SQL Auth Proxy is running:
 
 ```bash
@@ -143,6 +154,7 @@ psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres"
 ```
 
 ## Shared Directory
+
 - Note that the build scripts copy the shared directory into the backend and frontend directories.
 - This is necessary because of the way Google Cloud Run deploys... don't ask
 
