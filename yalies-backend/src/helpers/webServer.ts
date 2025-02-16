@@ -29,6 +29,10 @@ export default class WebServer {
 		this.#app.use(cors({ credentials: true, origin: true }));
 		this.#app.use(express.json());
 		this.#app.use(express.urlencoded({ extended: true }));
+		this.#app.use((req, res, next) => {
+			res.set("Cache-Control", "no-store");
+			next();
+		});
 		
 		this.#app.use(session({
 			secret: process.env.SESSION_SECRET,
@@ -57,7 +61,6 @@ export default class WebServer {
 			modelKey: "SessionModel",
 			checkExpirationInterval: 15 * 60 * 1000,
 			extendDefaultFields: (defaults, session) => {
-				console.log("NETID: " + session.netid);
 				return {
 					data: defaults.data,
 					expires: defaults.expires,

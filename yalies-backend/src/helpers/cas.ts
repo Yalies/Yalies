@@ -52,7 +52,7 @@ export default class CAS {
 	};
 
 	static authenticateWithSession = async (req: Request, res: Response, next: NextFunction) => {
-		if (!req.isAuthenticated() || !req.user) return res.status(401).send("Unauthorized");
+		if (!req.isAuthenticated() || !req.user) return res.status(401).send("Unauthorized. Supply a session cookie or API key.");
 		const user = req.user as RequestUser;
 		if(!user.netId) return res.status(401).send("No netId associated with logged-in user");
 		req.netid = user.netId;
