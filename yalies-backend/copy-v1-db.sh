@@ -9,6 +9,7 @@
 # ENV VARS
 # DATABASE_URL: V1 database url (the same one in bash profile)
 # YALIES_V2_DATABASE_URL: the same string from .env.development DATABASE_URL
+# PGPASSWORD: password for the V2 database
 
 
 pg_dump \
@@ -21,8 +22,10 @@ pg_dump \
 	"$DATABASE_URL" \
 	> mydump.dump
 
+psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres" -c 'DROP TABLE IF EXISTS "group", "leadership", "person";'
+
 psql -p 1357 "host=127.0.0.1 sslmode=disable dbname=postgres user=postgres" < mydump.dump
 
-rm mydump.dump
+rm -f mydump.dump
 
 echo "Finished cloning tables"
