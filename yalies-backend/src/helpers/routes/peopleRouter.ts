@@ -21,6 +21,22 @@ export default class PeopleRouter {
 			{ [Op.gt]: 0.4 },
 		);
 
+	constructInitialsQuery = (initials: string) => {
+		initials = initials.toUpperCase();
+		return {
+			[Op.and]: [
+				Sequelize.where(
+					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("first_name"), 1)),
+					initials[0]
+				),
+				Sequelize.where(
+					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("last_name"), 1)),
+					initials[1]
+				)
+			]
+		};
+	};
+
 	getPeople = async (req: Request, res: Response) => {
 		const query = req.body.query || "";
 		const filtersRaw = req.body.filters || {};
@@ -33,18 +49,35 @@ export default class PeopleRouter {
 		}
 
 		// Go through filters and construct a where query
-		let where: WhereOptions = {};
+		let where: WhereOptions<PersonModel> = {};
 		for(const field of Object.keys(filtersRaw)) {
+			if(field === "initials") {
+				const initials = filtersRaw[field][0];
+				if(typeof initials === "string" && initials.length === 2) {
+					where = {
+						...where,
+						...this.constructInitialsQuery(initials)
+					};
+				}
+				continue;
+			}
+
 			if(!PERSON_ALLOWED_FILTER_FIELDS.includes(field)) {
 				res.status(400).send(`Cannot filter by field ${field}`);
 				return;
 			}
-			if(Array.isArray(field)) {
-				where[field] = {
-					[Op.in]: filtersRaw[field],
+			if(Array.isArray(filtersRaw[field])) {
+				where = {
+					...where,
+					[field]: {
+						[Op.in]: filtersRaw[field],
+					}
 				};
 			} else {
-				where[field] = filtersRaw[field];
+				where = {
+					...where,
+					[field]: filtersRaw[field]
+				};
 			}
 		}
 
