@@ -22,16 +22,13 @@ export default class PeopleRouter {
 		);
 
 	constructInitialsQuery = (initials: string) => {
-		// Convert initials to uppercase for case-insensitive comparison
 		initials = initials.toUpperCase();
 		return {
 			[Op.and]: [
-				// First letter of first name matches first initial
 				Sequelize.where(
 					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("first_name"), 1)),
 					initials[0]
 				),
-				// First letter of last name matches second initial
 				Sequelize.where(
 					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("last_name"), 1)),
 					initials[1]
@@ -56,8 +53,6 @@ export default class PeopleRouter {
 		for(const field of Object.keys(filtersRaw)) {
 			if(field === "initials") {
 				const initials = filtersRaw[field][0];
-				console.log('initials', initials);
-				console.log('constructing', this.constructInitialsQuery(initials))
 				if(typeof initials === "string" && initials.length === 2) {
 					where = {
 						...where,
@@ -116,11 +111,7 @@ export default class PeopleRouter {
 				where,
 				limit: pageSize,
 				offset: page * pageSize,
-				order: [
-					["last_name", "ASC"],
-					["first_name", "ASC"],
-					["netid", "ASC"]  // Add netid as a tiebreaker
-				],
+				order: [["last_name", "ASC"], ["first_name", "ASC"]],
 				replacements: { query: `%${query}%` },
 			});
 		} catch(e) {
