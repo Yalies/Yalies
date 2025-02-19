@@ -61,6 +61,14 @@ export default function HomePage() {
 				upi: [query],
 				...filterObject,
 			};
+		} else if(queryActual.match(/^[a-z]{2}$/i)) {
+			console.log("test2")
+			// This is an initials search
+			queryActual = "";
+			filterObject = {
+				initials: [query.toLowerCase()],
+				...filterObject,
+			};
 		}
 
 		try {
@@ -102,7 +110,7 @@ export default function HomePage() {
 			setHasReachedEnd(true);
 			return;
 		}
-		setPeople([...people, ...newPeople]);
+		setPeople(prevPeople => [...prevPeople, ...newPeople]);
 		setCurrentPage(currentPage + 1);
 	};
 
@@ -153,6 +161,9 @@ export default function HomePage() {
 	}, []);
 
 	useEffect(() => { // TODO: Convert to use SWR
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
 		getPeople();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [filters, query]);
