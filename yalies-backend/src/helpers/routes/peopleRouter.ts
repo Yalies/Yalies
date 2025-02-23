@@ -27,13 +27,13 @@ export default class PeopleRouter {
 			[Op.and]: [
 				Sequelize.where(
 					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("first_name"), 1)),
-					initials[0]
+					initials[0],
 				),
 				Sequelize.where(
 					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("last_name"), 1)),
-					initials[1]
-				)
-			]
+					initials[1],
+				),
+			],
 		};
 	};
 
@@ -60,12 +60,12 @@ export default class PeopleRouter {
 					...where,
 					[field]: {
 						[Op.in]: filtersRaw[field],
-					}
+					},
 				};
 			} else {
 				where = {
 					...where,
-					[field]: filtersRaw[field]
+					[field]: filtersRaw[field],
 				};
 			}
 		}
@@ -75,7 +75,7 @@ export default class PeopleRouter {
 			if(query.match(/^[a-z]{2}$/i)) {
 				where = {
 					...where,
-					...this.constructInitialsQuery(query)
+					...this.constructInitialsQuery(query),
 				};
 			} else {
 				where = {
