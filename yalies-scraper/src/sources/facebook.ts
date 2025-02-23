@@ -2,7 +2,7 @@ import Source from "./source.js";
 import { JSDOM } from "jsdom";
 import fetch from "node-fetch";
 import { log, logError } from "../helpers/log.js";
-import { Person } from "../../../yalies-shared/src/datatypes.js";
+import { Person } from "../../../yalies-shared/datatypes.js";
 import { MAJOR_FULL_NAMES, MAJORS } from "../helpers/majors.js";
 import { getTextContentNonRecursive } from "../helpers/jsdomUtil.js";
 
@@ -28,6 +28,40 @@ export default class FacebookSource extends Source {
 		super();
 		this.#cookie = cookie;
 	}
+
+	getRoomNumbers = async (): Promise<string[]> => {
+		// First, set the room to search
+		// Equivalent to changing the dropdown from a browser
+		let response;
+		try {
+			response = await fetch("https://students.yale.edu/facebook/Sort?sort=roomnumber", {
+				method: "GET",
+				headers: {
+					"Cookie": this.#cookie,
+				},
+			});
+			if (response) {
+				const text = await response.text();
+				const dom = new JSDOM(text);
+				const doc = dom.window.document;
+				const dropdown = doc.getElementById("items_search");
+				if (dropdown) {
+					const options = dropdown.querySelectorAll("option");
+					const roomNumbers = Array.from(options).map(option => option.value);
+					console.log("hi2");
+					// print all elements of roomnumbers
+					roomNumbers.forEach(element => console.log(element));
+					return roomNumbers;
+				}
+
+			}
+		} 
+		catch(e) {
+			logError("FacebookSource", "Failed to set room dropdown", e);
+			throw e;
+		}
+	};
+
 
 	getHtml = async (): Promise<string> => {
 		// First, set the college to search
@@ -189,7 +223,12 @@ export default class FacebookSource extends Source {
 	};
 
 	scrape = async () => {
-		log("FacebookSource", "Scraping Facebook");
+		const numbers = await this.getRoomNumbers();
+		// print all elements of numbers
+		numbers.forEach(element => console.log(element));
+		// wait for user input
+		await new Promise(resolve => setTimeout(resolve, 10000));
+
 
 		const html = await this.getHtml();
 		log("FacebookSource", "HTML fetched");
