@@ -1,23 +1,68 @@
 "use client";
 import PeopleGrid from "@/components/PeopleGrid";
-import { useCallback, useEffect, useState } from "react";
-import { Person } from "../../../yalies-shared/src/datatypes.js";
+import { useEffect, useState } from "react";
+import { Person } from "../../../yalies-shared/datatypes";
 import Navbar from "@/components/Navbar";
 import Filters from "@/components/Filters";
 import Topbar from "@/components/Topbar";
 import Splash from "@/components/Splash";
-
+import Searchbar from "@/components/Searchbar";
+import { isMobile } from "@/consts";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export default function HomePage() {
+	const DEFAULT_FILTERS = {
+		school: ["Yale College"],
+		year: [],
+		college: [],
+		major: [],
+	};
 	const [isUnauthenticated, setUnauthenticated] = useState(false);
 	const [people, setPeople] = useState<Person[]>([]);
 	const [birthdayPeople, setBirthdayPeople] = useState<Person[]>([]);
 	const [hasReachedEnd, setHasReachedEnd] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
+	const [filters, setFilters] = useState<Record<string, string[]> | null>(DEFAULT_FILTERS);
+	// query <- searchboxText on enter key
+	const [searchboxText, setSearchboxText] = useState("");
+	const [query, setQuery] = useState("");
+	const [isClient, setIsClient] = useState(false);
 
-	const getPeople = useCallback(async () => {
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	const getPeople = async () => {
 		if(hasReachedEnd) return;
+		if(filters === null) return;
 		let response;
+
+		let queryActual = query;
+		// Construct the filter object.
+		// We have to do this because Sequelize treats empty array
+		// as only allowing null values to pass through the filter
+		let filterObject: Record<string, string[]> = {};
+		if(filters.year && filters.year.length > 0) filterObject.year = filters.year;
+		if(filters.school && filters.school.length > 0) filterObject.school = filters.school;
+		if(filters.college && filters.college.length > 0) filterObject.college = filters.college;
+		if(filters.major && filters.major.length > 0) filterObject.major = filters.major;
+
+		if(queryActual.match(/^[a-z]{2,}\d{1,4}$/i)) {
+			// This is a netID
+			queryActual = "";
+			filterObject = {
+				netid: [query],
+				...filterObject,
+			};
+		} else if(queryActual.match(/^\d{8}$/i)) {
+			// This is a UPI
+			queryActual = "";
+			filterObject = {
+				upi: [query],
+				...filterObject,
+			};
+		}
+
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
 				method: "POST",
@@ -26,9 +71,8 @@ export default function HomePage() {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					filters: {
-						school: "Yale College",
-					},
+					query: queryActual.length > 0 ? queryActual : null,
+					filters: filterObject,
 					page: currentPage,
 					page_size: 20,
 				}),
@@ -60,9 +104,9 @@ export default function HomePage() {
 		}
 		setPeople([...people, ...newPeople]);
 		setCurrentPage(currentPage + 1);
-	}, [currentPage, hasReachedEnd, people]);
+	};
 
-	const getTodaysBirthdays = useCallback(async () => {
+	const getTodaysBirthdays = async () => {
 		let response;
 		try {
 			response = await fetch(`${process.env.NEXT_PUBLIC_YALIES_API_URL}/v2/people`, {
@@ -102,13 +146,16 @@ export default function HomePage() {
 		}
 		const newPeople: Person[] = await response?.json();
 		setBirthdayPeople(newPeople);
-	}, []);
+	};
 
 	useEffect(() => { // TODO: Convert to use SWR
 		getTodaysBirthdays();
-		getPeople();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => { // TODO: Convert to use SWR
+		getPeople();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [filters, query]);
 
 	if(isUnauthenticated) {
 		return (
@@ -121,16 +168,85 @@ export default function HomePage() {
 		);
 	}
 
-	const peopleToDisplay = [
+	const filtersAreDefault = (
+		filters !== null &&
+		filters.school && filters.school.length === 1 &&
+		filters.school[0] === "Yale College" &&
+		filters.year && filters.year.length === 0 &&
+		filters.college && filters.college.length === 0 &&
+		filters.major && filters.major.length === 0
+	);
+
+	const peopleToDisplay = (filtersAreDefault && query.length === 0) ? [
 		...birthdayPeople,
 		...people,
-	];
+	] : people;
+
+	const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchboxText(e.target.value);
+	};
+	
+	const onSubmit = () => {
+		if(searchboxText === query) return;
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setQuery(searchboxText);
+		sendGAEvent("event", "search", { query: searchboxText });
+	}
+
+	const searchbar = (
+		<Searchbar
+			value={searchboxText}
+			onChange={onQueryChange}
+			onSubmit={onSubmit}
+		/>
+	);
+
+	const setFilterValue = (key: string, newValue: string[]) => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters({ ...filters, [key]: newValue });
+	};
+
+	const reset = () => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters(DEFAULT_FILTERS);
+	};
+
+	if(isMobile() && isClient) return (
+		<>
+			<Topbar>
+				<Navbar isAuthenticated={true} />
+			</Topbar>
+			{searchbar}
+			<Filters
+				filters={filters || {}}
+				setFilterValue={setFilterValue}
+				reset={reset}
+				filtersAreDefault={filtersAreDefault}
+			/>
+			<PeopleGrid
+				people={peopleToDisplay}
+				loadMoreFunction={getPeople}
+				hasReachedEnd={hasReachedEnd}
+			/>
+		</>
+	);
 
 	return (
 		<>
 			<Topbar>
-				<Navbar />
-				<Filters />
+				<Navbar middleContent={searchbar} isAuthenticated={true} />
+				<Filters
+					filters={filters || {}}
+					setFilterValue={setFilterValue}
+					reset={reset}
+					filtersAreDefault={filtersAreDefault}
+				/>
 			</Topbar>
 			<PeopleGrid
 				people={peopleToDisplay}

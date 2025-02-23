@@ -1,8 +1,8 @@
 "use client";
 import { useMemo } from "react";
-import { Person } from "../../../yalies-shared/src/datatypes.js";
+import { Person } from "../../../yalies-shared/datatypes";
 import styles from "./peoplegrid.module.scss";
-import Chip from "./Chip";
+import Chip, { ClickableChip } from "./Chip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faCake, faEnvelope, faGraduationCap, faHouse } from "@fortawesome/free-solid-svg-icons";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -77,12 +77,23 @@ export default function PeopleGrid({
 				});
 			}
 			const todayIsBirthday = person.birth_month === new Date().getMonth() + 1 && person.birth_day === new Date().getDate();
+			const copyText = (text: string | undefined) => text && navigator.clipboard.writeText(text);
 			const chips = [
 				person.netid && (
-					<Chip key="netid" primary>NetID {person.netid}</Chip>
+					<ClickableChip
+						key="netid"
+						defaultText={`NetID ${person.netid}`}
+						clickedText="Copied!"
+						onClick={() => copyText(person.netid)}
+					/>
 				),
 				person.upi && (
-					<Chip key="upi" primary>UPI {person.upi}</Chip>
+					<ClickableChip
+						key="upi"
+						defaultText={`UPI ${person.upi}`}
+						clickedText="Copied!"
+						onClick={() => copyText(person.upi?.toString())}
+					/>
 				),
 				person.major && (
 					<Chip key="major" icon={faBook}>{person.major}</Chip>
@@ -113,12 +124,12 @@ export default function PeopleGrid({
 			);
 		});
 	}, [people]);
-	console.log(peopleElems.length)
+
 	return (
 		<InfiniteScroll
 			className={styles.people_grid}
 			dataLength={people.length}
-			next={() => { console.log("Load"); loadMoreFunction(); }}
+			next={loadMoreFunction}
 			hasMore={!hasReachedEnd}
 			loader={<LoadingIcon />}
 		>

@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize";
 import PersonModel from "./models/PersonModel.js";
+import SessionModel from "./models/SessionModel.js";
+import APIKeyModel from "./models/APIKeyModel.js";
 
 export const SEQUELIZE_DEFINITION_OPTIONS = {
 	paranoid: false,
@@ -13,17 +15,37 @@ export default class DB {
 
 	constructor() {
 		this.#sql = new Sequelize(process.env.DATABASE_URL, {
-			dialectOptions: {
-				ssl: {
-					require: true,
-					rejectUnauthorized: false,
-				},
-			},
 			logging: false,
 		});
-		this.testConnection();
 		this.registerModels();
+		this.initializeDb();
 	}
+	
+	initializeDb = async () => {
+		await this.testConnection();
+		await this.setupDb();
+	};
+
+	setupDb = async () => {
+		try {
+			await this.#sql.query(`
+				CREATE OR REPLACE FUNCTION first_last_name(text, text)
+				RETURNS text AS $$
+					SELECT concat_ws(' ', $1, $2);
+				$$ LANGUAGE SQL IMMUTABLE;
+			`);
+			await this.#sql.query(`
+				CREATE INDEX IF NOT EXISTS first_last_fuzzy
+				ON person
+				USING gin (first_last_name(first_name, last_name) gin_trgm_ops);
+			`);
+		} catch (error) {
+			console.error("Error setting up database:", error);
+		}
+		console.log("Database setup complete");
+	};
+
+	getSql = () => this.#sql;
 
 	testConnection = async () => {
 		try {
@@ -36,5 +58,7 @@ export default class DB {
 
 	registerModels = () => {
 		PersonModel.initModel(this.#sql);
+		SessionModel.initModel(this.#sql);
+		APIKeyModel.initModel(this.#sql);
 	};
 };

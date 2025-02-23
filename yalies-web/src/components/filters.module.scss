@@ -7,31 +7,23 @@
 	align-items: center;
 	justify-content: flex-start;
 	gap: 20px;
-	button {
-		font-size: 12px;
-		background: none;
-		border: 0;
-		padding: 8px 8px;
-		display: flex;
-		gap: 8px;
-		align-items: center;
-		font-family: inherit;
-		svg {
-			height: 12px;
-			color: #666;
-		}
-		&.active {
-			color: #468ff2;
-			svg {
-				height: 9px;
-			}
-		}
+
+	@include shared.responsive() {
+		margin: 30px;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
-	.reset {
-		background-color: #dc3545AA;
-		color: #FFF;
-		font-size: 10px;
-		padding: 5px;
-		border-radius: 7px;
+}
+
+.reset {
+	background-color: transparentize($color: shared.$destructive-color, $amount: 0.3);
+	color: #FFFFFF;
+	font-size: 10px;
+	padding: 5px;
+	border-radius: shared.$border-radius-standard;
+	border: none;
+	&.active {
+		cursor: pointer;
+		background-color: shared.$destructive-color;
 	}
 }

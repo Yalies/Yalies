@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.scss";
 import mainStyle from "./main.module.scss";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
 	title: "Yalies",
@@ -20,6 +20,7 @@ export default function RootLayout({
 					{children}
 				</div>
 			</body>
+			<GoogleAnalytics gaId="G-4ZXZ59XG92" />
 		</html>
 	);
 }

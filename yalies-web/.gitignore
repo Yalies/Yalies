@@ -1,5 +1,8 @@
-.env
+src/yalies-shared
 
+
+.env.production
+.env.development
 
 
 

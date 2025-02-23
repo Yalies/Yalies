@@ -5,9 +5,16 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "npx tsc && node build/yalies-backend/src/index.js",
+    "start": "node build/index.js",
+    "copy-shared": "rm -rf src/yalies-shared && cp -r ../yalies-shared ./src",
+    "build": "npx tsc",
+    "dev": "npm run copy-shared && npm run build && NODE_ENV=development npm start",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix"
+    "format": "eslint src/**/*.ts --fix",
+    "deploy": "npm run copy-shared && gcloud run deploy --source . --region us-central1 --allow-unauthenticated yalies-backend"
+  },
+  "engines": {
+    "node": "20"
   },
   "repository": {
     "type": "git",
@@ -25,7 +32,9 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^8.4.0",
+    "connect-session-sequelize": "github:ericyoondotcom/connect-session-sequelize",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-session": "^1.18.0",

@@ -5,11 +5,19 @@ import CasRouter from "./routes/casRouter.js";
 import passport from "passport";
 import session from "express-session";
 import cors from "cors";
+import FiltersRouter from "./routes/filtersRouter.js";
+import DB from "./db.js";
+import ConnectSessionSequelize from "connect-session-sequelize";
+import APIKeyRouter from "./routes/apiKeyRouter.js";
+
+const SequelizeStore = ConnectSessionSequelize(session.Store);
 
 export default class WebServer {
 	#app: Express;
+	#db: DB;
 
-	constructor() {
+	constructor(db: DB) {
+		this.#db = db;
 		this.initializeExpress();
 		this.initializeSubRouters();
 		this.serve();
@@ -21,22 +29,46 @@ export default class WebServer {
 		this.#app.use(cors({ credentials: true, origin: true }));
 		this.#app.use(express.json());
 		this.#app.use(express.urlencoded({ extended: true }));
+		this.#app.use((req, res, next) => {
+			res.set("Cache-Control", "no-store");
+			next();
+		});
+		
 		this.#app.use(session({
 			secret: process.env.SESSION_SECRET,
 			resave: false,
-			saveUninitialized: true,
+			saveUninitialized: false,
 			cookie: { 
 				httpOnly: true,
 				// Restrict to HTTPS only in prod
 				secure: process.env.NODE_ENV !== "development",
+				// TODO: THIS IS INSECURE DUE TO CSRF! Once we get domains, do Domain Relaxation
+				sameSite: process.env.NODE_ENV !== "development" ? "none" : false,
 				// 400 days, the max age that Chrome supports
-				maxAge: 34560000,
+				// Note that the cookie API uses secs, while express uses millis
+				maxAge: 34560000 * 1000,
 			},
-			// TODO: You can add a `store` option here to commit sessions
-			// to a database. Add this once the DB is set up
+			store: this.createSessionStore(),
 		}));
 		this.#app.use(passport.initialize());
 		this.#app.use(passport.session());
+	};
+
+	createSessionStore = () => {
+		const store = new SequelizeStore({
+			db: this.#db.getSql(),
+			table: "session",
+			modelKey: "SessionModel",
+			checkExpirationInterval: 15 * 60 * 1000,
+			extendDefaultFields: (defaults, session) => {
+				return {
+					data: defaults.data,
+					expires: defaults.expires,
+					netid: session.netid,
+				};
+			},
+		});
+		return store;
 	};
 
 	initializeSubRouters = () => {
@@ -48,6 +80,25 @@ export default class WebServer {
 		
 		const casRouter = new CasRouter();
 		this.#app.use("/v2/login", casRouter.getRouter());
+		
+		const filtersRouter = new FiltersRouter();
+		this.#app.use("/v2/filters", filtersRouter.getRouter());
+
+		const apiKeyRouter = new APIKeyRouter();
+		this.#app.use("/v2/api-keys", apiKeyRouter.getRouter());
+
+		this.#app.get("/", (req, res) => {
+			res.status(200).send(
+				"<html><body><pre>" +
+				"__   __    _ _             _       <br />" +
+				"\\ \\ / /_ _| (_) ___  ___  (_) ___  <br />" +
+				" \\ V / _` | | |/ _ \\/ __| | |/ _ \\ <br />" +
+				"  | | (_| | | |  __/\\__ \\_| | (_) |<br />" +
+				"  |_|\\__,_|_|_|\\___||___(_)_|\\___/ <br />" +
+				"								    <br />" +
+				"</pre></body></html>",
+			);
+		});
 	};
 
 	serve = () => {
