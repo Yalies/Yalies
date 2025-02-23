@@ -21,6 +21,22 @@ export default class PeopleRouter {
 			{ [Op.gt]: 0.4 },
 		);
 
+	constructInitialsQuery = (initials: string) => {
+		initials = initials.toUpperCase();
+		return {
+			[Op.and]: [
+				Sequelize.where(
+					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("first_name"), 1)),
+					initials[0],
+				),
+				Sequelize.where(
+					Sequelize.fn("UPPER", Sequelize.fn("LEFT", Sequelize.col("last_name"), 1)),
+					initials[1],
+				),
+			],
+		};
+	};
+
 	getPeople = async (req: Request, res: Response) => {
 		const query = req.body.query || "";
 		const filtersRaw = req.body.filters || {};
@@ -33,43 +49,57 @@ export default class PeopleRouter {
 		}
 
 		// Go through filters and construct a where query
-		let where: WhereOptions = {};
+		let where: WhereOptions<PersonModel> = {};
 		for(const field of Object.keys(filtersRaw)) {
 			if(!PERSON_ALLOWED_FILTER_FIELDS.includes(field)) {
 				res.status(400).send(`Cannot filter by field ${field}`);
 				return;
 			}
-			if(Array.isArray(field)) {
-				where[field] = {
-					[Op.in]: filtersRaw[field],
+			if(Array.isArray(filtersRaw[field])) {
+				where = {
+					...where,
+					[field]: {
+						[Op.in]: filtersRaw[field],
+					},
 				};
 			} else {
-				where[field] = filtersRaw[field];
+				where = {
+					...where,
+					[field]: filtersRaw[field],
+				};
 			}
 		}
 
 		if(query) { // Fuzzy search using trigrams
-			where = {
-				...where,
-				[Op.or]: [ // match `first last` OR `first` OR `last`
-					this.constructSimilarityQuery(
-						Sequelize.fn(
-							"first_last_name",
-							Sequelize.col("first_name"),
-							Sequelize.col("last_name"),
+			// Check if query is initials (2 letters)
+			if(query.match(/^[a-z]{2}$/i)) {
+				where = {
+					...where,
+					...this.constructInitialsQuery(query),
+				};
+			} else {
+				where = {
+					...where,
+					[Op.or]: [ // match `first last` OR `first` OR `last`
+						this.constructSimilarityQuery(
+							Sequelize.fn(
+								"first_last_name",
+								Sequelize.col("first_name"),
+								Sequelize.col("last_name"),
+							),
+							query,
 						),
-						query,
-					),
-					this.constructSimilarityQuery(
-						"first_name",
-						query,
-					),
-					this.constructSimilarityQuery(
-						"last_name",
-						query,
-					),
-				],
-			};
+						this.constructSimilarityQuery(
+							"first_name",
+							query,
+						),
+						this.constructSimilarityQuery(
+							"last_name",
+							query,
+						),
+					],
+				};
+			}
 		}
 
 		let people: PersonModel[];
