@@ -1,7 +1,9 @@
 @use "../shared.scss";
 
 .people_grid {
-    margin-top: 15px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
     .person {
         width: 3.3in;
         display: inline-block;
