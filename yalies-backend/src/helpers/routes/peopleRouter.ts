@@ -51,17 +51,6 @@ export default class PeopleRouter {
 		// Go through filters and construct a where query
 		let where: WhereOptions<PersonModel> = {};
 		for(const field of Object.keys(filtersRaw)) {
-			if(field === "initials") {
-				const initials = filtersRaw[field][0];
-				if(typeof initials === "string" && initials.length === 2) {
-					where = {
-						...where,
-						...this.constructInitialsQuery(initials)
-					};
-				}
-				continue;
-			}
-
 			if(!PERSON_ALLOWED_FILTER_FIELDS.includes(field)) {
 				res.status(400).send(`Cannot filter by field ${field}`);
 				return;
