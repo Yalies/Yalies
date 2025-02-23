@@ -61,13 +61,6 @@ export default function HomePage() {
 				upi: [query],
 				...filterObject,
 			};
-		} else if(queryActual.match(/^[a-z]{2}$/i)) {
-			// This is an initials search
-			queryActual = "";
-			filterObject = {
-				initials: [query.toLowerCase()],
-				...filterObject,
-			};
 		}
 
 		try {

@@ -82,27 +82,35 @@ export default class PeopleRouter {
 		}
 
 		if(query) { // Fuzzy search using trigrams
-			where = {
-				...where,
-				[Op.or]: [ // match `first last` OR `first` OR `last`
-					this.constructSimilarityQuery(
-						Sequelize.fn(
-							"first_last_name",
-							Sequelize.col("first_name"),
-							Sequelize.col("last_name"),
+			// Check if query is initials (2 letters)
+			if(query.match(/^[a-z]{2}$/i)) {
+				where = {
+					...where,
+					...this.constructInitialsQuery(query)
+				};
+			} else {
+				where = {
+					...where,
+					[Op.or]: [ // match `first last` OR `first` OR `last`
+						this.constructSimilarityQuery(
+							Sequelize.fn(
+								"first_last_name",
+								Sequelize.col("first_name"),
+								Sequelize.col("last_name"),
+							),
+							query,
 						),
-						query,
-					),
-					this.constructSimilarityQuery(
-						"first_name",
-						query,
-					),
-					this.constructSimilarityQuery(
-						"last_name",
-						query,
-					),
-				],
-			};
+						this.constructSimilarityQuery(
+							"first_name",
+							query,
+						),
+						this.constructSimilarityQuery(
+							"last_name",
+							query,
+						),
+					],
+				};
+			}
 		}
 
 		let people: PersonModel[];
