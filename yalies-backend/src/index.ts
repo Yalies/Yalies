@@ -2,6 +2,7 @@ import {configDotenv} from "dotenv";
 import WebServer from "./helpers/webServer.js";
 import CAS from "./helpers/cas.js";
 import DB from "./helpers/db.js";
+import Elasticsearch from "./elasticsearch.js";
 
 configDotenv({
 	path: process.env.NODE_ENV === "development" ? ".env.development" : ".env.production",
@@ -11,4 +12,5 @@ if(process.env.NODE_ENV === "development") console.log("******\nRunning in devel
 
 new CAS();
 const db = new DB();
-new WebServer(db);
+const elasticsearch = new Elasticsearch();
+new WebServer(db, elasticsearch);

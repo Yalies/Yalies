@@ -2,24 +2,20 @@ import express, {Request, Response} from "express";
 import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import CAS from "../cas.js";
-import { Fn } from "sequelize/types/utils.js";
+import Elasticsearch from "../../elasticsearch.js";
 
 export default class PeopleRouter {
+	#elasticsearch: Elasticsearch;
+
+	constructor(elasticsearch: Elasticsearch) {
+		this.#elasticsearch = elasticsearch;
+	}
+
 	getRouter = () => {
 		const router = express.Router();
 		router.post("/", CAS.requireAuthentication, this.getPeople);
 		return router;
 	};
-
-	constructSimilarityQuery = (fn: Fn | string, query: string) =>
-		Sequelize.where(
-			Sequelize.fn(
-				"similarity",
-				fn,
-				query,
-			),
-			{ [Op.gt]: 0.4 },
-		);
 
 	constructInitialsQuery = (initials: string) => {
 		initials = initials.toUpperCase();
@@ -78,26 +74,11 @@ export default class PeopleRouter {
 					...this.constructInitialsQuery(query),
 				};
 			} else {
+				const exact = await this.#elasticsearch.searchPersonByNameFuzzy(query, false);
+				const fuzzy = await this.#elasticsearch.searchPersonByNameFuzzy(query, true);
 				where = {
 					...where,
-					[Op.or]: [ // match `first last` OR `first` OR `last`
-						this.constructSimilarityQuery(
-							Sequelize.fn(
-								"first_last_name",
-								Sequelize.col("first_name"),
-								Sequelize.col("last_name"),
-							),
-							query,
-						),
-						this.constructSimilarityQuery(
-							"first_name",
-							query,
-						),
-						this.constructSimilarityQuery(
-							"last_name",
-							query,
-						),
-					],
+					netid: [...exact, ...fuzzy],
 				};
 			}
 		}
@@ -108,8 +89,6 @@ export default class PeopleRouter {
 				where,
 				limit: pageSize,
 				offset: page * pageSize,
-				order: [["last_name", "ASC"], ["first_name", "ASC"]],
-				replacements: { query: `%${query}%` },
 			});
 		} catch(e) {
 			console.error(e);

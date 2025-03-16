@@ -37,6 +37,7 @@ export const PERSON_ALLOWED_FILTER_FIELDS = [
 
 export default class PersonModel extends Model {
 	// Identifiers
+	declare id: number;
 	declare netid: string;
 	declare upi: number;
 	declare email: string;
@@ -98,7 +99,7 @@ export default class PersonModel extends Model {
 	static initModel(sequelize: Sequelize) {
 		PersonModel.init({
 			// Identifiers
-			id: { type: DataTypes.STRING, primaryKey: true },
+			id: { type: DataTypes.INTEGER, primaryKey: true },
 			netid: { type: DataTypes.STRING },
 			upi: { type: DataTypes.INTEGER },
 			email: { type: DataTypes.STRING },
@@ -167,6 +168,7 @@ export default class PersonModel extends Model {
 		}
 		// Only return fields that are not null
 		return {
+			...this.id != null && 					{ id: this.id },
 			...this.netid != null && 				{ netid: this.netid },
 			...this.upi != null && 					{ upi: this.upi },
 			...this.email != null && 				{ email: this.email },

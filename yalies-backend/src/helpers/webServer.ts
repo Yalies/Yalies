@@ -9,15 +9,18 @@ import FiltersRouter from "./routes/filtersRouter.js";
 import DB from "./db.js";
 import ConnectSessionSequelize from "connect-session-sequelize";
 import APIKeyRouter from "./routes/apiKeyRouter.js";
+import Elasticsearch from "../elasticsearch.js";
 
 const SequelizeStore = ConnectSessionSequelize(session.Store);
 
 export default class WebServer {
 	#app: Express;
 	#db: DB;
+	#elasticsearch: Elasticsearch;
 
-	constructor(db: DB) {
+	constructor(db: DB, elasticsearch: Elasticsearch) {
 		this.#db = db;
+		this.#elasticsearch = elasticsearch;
 		this.initializeExpress();
 		this.initializeSubRouters();
 		this.serve();
@@ -75,7 +78,7 @@ export default class WebServer {
 		const pingPongRouter = new PingPongRouter();
 		this.#app.use("/v2/ping", pingPongRouter.getRouter());
 		
-		const peopleRouter = new PeopleRouter();
+		const peopleRouter = new PeopleRouter(this.#elasticsearch);
 		this.#app.use("/v2/people", peopleRouter.getRouter());
 		
 		const casRouter = new CasRouter();

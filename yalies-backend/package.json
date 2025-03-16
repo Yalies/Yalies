@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/Yalies/Yalies#readme",
   "dependencies": {
+    "@elastic/elasticsearch": "7.13.0",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^8.4.0",
     "connect-session-sequelize": "github:ericyoondotcom/connect-session-sequelize",

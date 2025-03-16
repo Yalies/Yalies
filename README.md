@@ -105,6 +105,7 @@ In an effort to keep this project maintainable by future Y/CS members and team l
 		- We decided to use classes and OOP principles to structure the backend. Please follow existing code patterns.
 	- Express-Session, Passport, and Passport-CAS for authentication
 	- Sequelize as a SQL variant-agnostic ORM
+	- Elasticsearch, [exactly v7.13.0](https://stackoverflow.com/questions/68892291/node-and-elasticsearch-client-the-client-noticed-that-the-server-is-not-a-supp)
 	- ESLint to enforce style
 - Shared
 	- Types and helper functions to be shared between backend and frontend
@@ -119,6 +120,8 @@ With the rewrite, Yalies transitioned from a Heroku+AWS tech stack to Google Clo
 - Backend host: Google Cloud Run
 	- Cloud Run auto-scales, so we don't pay anything when there's no traffic and the site stays up when there's lots of traffic
 - Frontend host: Firebase Hosting (with [experimental Next.js deployment](https://firebase.google.com/docs/hosting/frameworks/nextjs))
+- Search host: Searchly
+	- Searchly was the cheapest Elasticsearch host we could find
 - Scraper host: Google Compute Engine
 	- We can turn on and off the Compute Engine instance to save money when the scraper's not running
 
