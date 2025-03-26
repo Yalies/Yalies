@@ -16,7 +16,10 @@ export default function HomePage() {
 		year: [],
 		college: [],
 		major: [],
+		birth_month: [],
+		birth_day: [],
 	};
+
 	const [isUnauthenticated, setUnauthenticated] = useState(false);
 	const [people, setPeople] = useState<Person[]>([]);
 	const [birthdayPeople, setBirthdayPeople] = useState<Person[]>([]);
@@ -27,6 +30,41 @@ export default function HomePage() {
 	const [searchboxText, setSearchboxText] = useState("");
 	const [query, setQuery] = useState("");
 	const [isClient, setIsClient] = useState(false);
+
+	const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchboxText(e.target.value);
+	};
+	
+	const onSubmit = () => {
+		if(searchboxText === query) return;
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setQuery(searchboxText);
+		sendGAEvent("event", "search", { query: searchboxText });
+	};
+
+	const setFilterValue = (key: string, newValue: string[]) => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters(prev => prev ? { ...prev, [key]: newValue } : { [key]: newValue });
+	};
+
+	const reset = () => {
+		setPeople([]);
+		setHasReachedEnd(false);
+		setCurrentPage(0);
+		setFilters(DEFAULT_FILTERS);
+	};
+
+	const searchbar = (
+		<Searchbar
+			value={searchboxText}
+			onChange={onQueryChange}
+			onSubmit={onSubmit}
+		/>
+	);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -42,10 +80,21 @@ export default function HomePage() {
 		// We have to do this because Sequelize treats empty array
 		// as only allowing null values to pass through the filter
 		let filterObject: Record<string, string[]> = {};
-		if(filters.year && filters.year.length > 0) filterObject.year = filters.year;
-		if(filters.school && filters.school.length > 0) filterObject.school = filters.school;
-		if(filters.college && filters.college.length > 0) filterObject.college = filters.college;
-		if(filters.major && filters.major.length > 0) filterObject.major = filters.major;
+		
+		// Helper function to add filter if it exists and has values
+		const addFilter = (key: string) => {
+			if (filters[key]?.length > 0) {
+				filterObject[key] = filters[key];
+			}
+		};
+
+		// Add all filters
+		addFilter('school');
+		addFilter('year');
+		addFilter('college');
+		addFilter('major');
+		addFilter('birth_month');
+		addFilter('birth_day');
 
 		if(queryActual.match(/^[a-z]{2,}\d{1,4}$/i)) {
 			// This is a netID
@@ -174,48 +223,15 @@ export default function HomePage() {
 		filters.school[0] === "Yale College" &&
 		filters.year && filters.year.length === 0 &&
 		filters.college && filters.college.length === 0 &&
-		filters.major && filters.major.length === 0
+		filters.major && filters.major.length === 0 &&
+		filters.birth_month && filters.birth_month.length === 0 &&
+		filters.birth_day && filters.birth_day.length === 0
 	);
 
 	const peopleToDisplay = (filtersAreDefault && query.length === 0) ? [
 		...birthdayPeople,
 		...people,
 	] : people;
-
-	const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchboxText(e.target.value);
-	};
-	
-	const onSubmit = () => {
-		if(searchboxText === query) return;
-		setPeople([]);
-		setHasReachedEnd(false);
-		setCurrentPage(0);
-		setQuery(searchboxText);
-		sendGAEvent("event", "search", { query: searchboxText });
-	}
-
-	const searchbar = (
-		<Searchbar
-			value={searchboxText}
-			onChange={onQueryChange}
-			onSubmit={onSubmit}
-		/>
-	);
-
-	const setFilterValue = (key: string, newValue: string[]) => {
-		setPeople([]);
-		setHasReachedEnd(false);
-		setCurrentPage(0);
-		setFilters({ ...filters, [key]: newValue });
-	};
-
-	const reset = () => {
-		setPeople([]);
-		setHasReachedEnd(false);
-		setCurrentPage(0);
-		setFilters(DEFAULT_FILTERS);
-	};
 
 	if(isMobile() && isClient) return (
 		<>
