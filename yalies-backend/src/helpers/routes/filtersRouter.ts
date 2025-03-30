@@ -6,7 +6,7 @@ import { col, fn } from "sequelize";
 // because we want this route to remain public.
 // If we used PERSON_ALLOWED_FILTER_FIELDS, any non-Yale person
 // could get a list of names, etc.
-export const DEFAULT_FILTER_FIELDS = ["school", "year", "college", "major"];
+export const DEFAULT_FILTER_FIELDS = ["school", "year", "college", "major", "birth_month"];
 
 export default class FiltersRouter {
 	getRouter = () => {

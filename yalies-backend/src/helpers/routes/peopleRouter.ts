@@ -52,12 +52,29 @@ export default class PeopleRouter {
 				return;
 			}
 			if(Array.isArray(filtersRaw[field])) {
-				where = {
-					...where,
-					[field]: {
-						[Op.in]: filtersRaw[field],
-					},
-				};
+				// Convert numeric fields to numbers
+				if (field === 'birth_month' || field === 'birth_day') {
+					const values = filtersRaw[field]
+						.map((v: string) => {
+							const num = parseInt(v, 10);
+							return isNaN(num) ? null : num;
+						})
+						.filter((n): n is number => n !== null);
+					
+					if (values.length > 0) {
+						where = {
+							...where,
+							[field]: values.length === 1 ? values[0] : { [Op.in]: values }
+						};
+					}
+				} else {
+					where = {
+						...where,
+						[field]: {
+							[Op.in]: filtersRaw[field],
+						},
+					};
+				}
 			} else {
 				where = {
 					...where,
