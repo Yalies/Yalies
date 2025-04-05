@@ -21,6 +21,7 @@ export type Person = {
 
     // Misc
     address?: string;
+	room_label?: string;
 
     // Students
     school?: string;

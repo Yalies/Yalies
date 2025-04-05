@@ -6,6 +6,7 @@ import { Person } from "../../../yalies-shared/datatypes.js";
 import { MAJOR_FULL_NAMES, MAJORS } from "../helpers/majors.js";
 import { getTextContentNonRecursive } from "../helpers/jsdomUtil.js";
 
+
 const BIRTHDAY_REGEX = /^[A-Z][a-z]{2} \d{1,2}$/;
 const ACCESS_CODE_REGEX = /^[0-9]-[0-9]+$/;
 const PHONE_REGEX = /[0-9]{3}-[0-9]{3}-[0-9]{4}/;
@@ -29,10 +30,11 @@ export default class FacebookSource extends Source {
 		this.#cookie = cookie;
 	}
 
-	getRoomNumbers = async (): Promise<string[]> => {
+	getRoomNumbers = async (): Promise<Person[]> => {
 		// First, set the room to search
 		// Equivalent to changing the dropdown from a browser
 		let response;
+		const roomHtmlStrings: Person[] = [];
 		try {
 			response = await fetch("https://students.yale.edu/facebook/Sort?sort=roomnumber", {
 				method: "GET",
@@ -41,25 +43,67 @@ export default class FacebookSource extends Source {
 				},
 			});
 			if (response) {
+				let roomNumbers: { value: string; label: string }[];
 				const text = await response.text();
 				const dom = new JSDOM(text);
 				const doc = dom.window.document;
 				const dropdown = doc.getElementById("items_search");
 				if (dropdown) {
 					const options = dropdown.querySelectorAll("option");
-					const roomNumbers = Array.from(options).map(option => option.value);
-					console.log("hi2");
-					// print all elements of roomnumbers
-					roomNumbers.forEach(element => console.log(element));
-					return roomNumbers;
+					roomNumbers = Array.from(options).map(option => ({
+						value: option.value,
+						label: option.textContent?.trim() || "",
+					}));
+					// return roomNumbers;
 				}
-
+				// Declare roomNumbers before using it
+				// Iterate through number in roomNumbers
+				for (let i = 1; i < roomNumbers.length; i++) {
+					const roomNumber = roomNumbers[i].value;
+					let response2;
+					try {
+						response2 = await fetch(`https://students.yale.edu/facebook/PhotoPageNew?currentIndex=${roomNumber}&currentSortValue=${roomNumber}`, {
+							method: "GET",
+							headers: {
+								"Cookie": this.#cookie,
+							},
+						});
+						if (response2) {
+							console.log(`Fetched room number ${roomNumber}`);
+							// Process response2 if needed
+							const text2 = await response2.text();
+							//print to out.txt
+							//const filePath = "out.txt";
+							//fs.appendFileSync(filePath, text2);
+							if(text2){
+								const dom2 = new JSDOM(text2);
+								const doc2 = dom2.window.document;
+    
+								const containers = doc2.querySelectorAll(".student_container");
+								
+								const people = Array.from(containers).map(container => this.parseStudentContainer(container));
+								people.forEach(person => {
+									roomHtmlStrings.push({ ...person, room_label: roomNumbers[i].label });
+								});
+							}
+							
+							// wait for user input
+							
+						}
+					} catch (e) {
+						logError("FacebookSource", "Failed to fetch room number details", e);
+						throw e;
+					}
+				}
 			}
 		} 
 		catch(e) {
 			logError("FacebookSource", "Failed to set room dropdown", e);
 			throw e;
 		}
+		return roomHtmlStrings;
+
+		
 	};
 
 
@@ -117,6 +161,7 @@ export default class FacebookSource extends Source {
 			school: "Yale College",
 			school_code: "YC",
 			first_name: "",
+			room_label: "",
 			last_name: "",
 			year: null,
 			pronouns: null,
@@ -226,8 +271,10 @@ export default class FacebookSource extends Source {
 		const numbers = await this.getRoomNumbers();
 		// print all elements of numbers
 		numbers.forEach(element => console.log(element));
-		// wait for user input
-		await new Promise(resolve => setTimeout(resolve, 10000));
+		// wait for 100 seconds
+		await new Promise(resolve => setTimeout(resolve, 100000));
+		log("FacebookSource", "Room numbers fetched");
+
 
 
 		const html = await this.getHtml();
