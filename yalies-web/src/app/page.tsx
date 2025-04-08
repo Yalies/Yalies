@@ -174,7 +174,8 @@ export default function HomePage() {
 		filters.school[0] === "Yale College" &&
 		filters.year && filters.year.length === 0 &&
 		filters.college && filters.college.length === 0 &&
-		filters.major && filters.major.length === 0
+		filters.major && filters.major.length === 0 &&
+		query.length === 0
 	);
 
 	const peopleToDisplay = (filtersAreDefault && query.length === 0) ? [
@@ -215,12 +216,14 @@ export default function HomePage() {
 		setHasReachedEnd(false);
 		setCurrentPage(0);
 		setFilters(DEFAULT_FILTERS);
+		setQuery("");
+		setSearchboxText("");
 	};
 
 	if(isMobile() && isClient) return (
 		<>
 			<Topbar>
-				<Navbar isAuthenticated={true} />
+				<Navbar isAuthenticated={true} onLogoClick={reset} />
 			</Topbar>
 			{searchbar}
 			<Filters
@@ -240,7 +243,7 @@ export default function HomePage() {
 	return (
 		<>
 			<Topbar>
-				<Navbar middleContent={searchbar} isAuthenticated={true} />
+				<Navbar middleContent={searchbar} isAuthenticated={true} onLogoClick={reset} />
 				<Filters
 					filters={filters || {}}
 					setFilterValue={setFilterValue}

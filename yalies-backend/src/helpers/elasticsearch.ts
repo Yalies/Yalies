@@ -1,5 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
-import { PersonElasticsearchResult } from "./helpers/types";
+import { PersonElasticsearchResult } from "./types";
 
 export default class Elasticsearch {
 	#esClient: Client;

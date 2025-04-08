@@ -9,13 +9,15 @@ const logoFont = Lexend_Deca({ subsets: ["latin"] });
 export default function Navbar({
 	middleContent,
 	isAuthenticated,
+	onLogoClick,
 }: {
 	middleContent?: React.ReactNode;
 	isAuthenticated?: boolean;
+	onLogoClick?: () => void;
 }) {
 	return (
 		<nav id={styles.navbar}>
-			<Link href="/" id={styles.logo} className={logoFont.className}>
+			<Link href="/" id={styles.logo} className={logoFont.className} onClick={onLogoClick}>
 				<Image width={46} height={46} src="/logo.png" alt="Yalies logo" />
 				<h2>Yalies</h2>
 			</Link>

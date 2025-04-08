@@ -9,7 +9,7 @@ import FiltersRouter from "./routes/filtersRouter.js";
 import DB from "./db.js";
 import ConnectSessionSequelize from "connect-session-sequelize";
 import APIKeyRouter from "./routes/apiKeyRouter.js";
-import Elasticsearch from "../elasticsearch.js";
+import Elasticsearch from "./elasticsearch.js";
 
 const SequelizeStore = ConnectSessionSequelize(session.Store);
 

@@ -2,7 +2,7 @@ import express, {Request, Response} from "express";
 import PersonModel, { PERSON_ALLOWED_FILTER_FIELDS } from "../models/PersonModel.js";
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import CAS from "../cas.js";
-import Elasticsearch from "../../elasticsearch.js";
+import Elasticsearch from "../elasticsearch.js";
 
 export default class PeopleRouter {
 	#elasticsearch: Elasticsearch;
@@ -66,6 +66,9 @@ export default class PeopleRouter {
 			}
 		}
 
+		let exactNetids: string[] = [];
+		let fuzzyNetids: string[] = [];
+
 		if(query) { // Fuzzy search using trigrams
 			// Check if query is initials (2 letters)
 			if(query.match(/^[a-z]{2}$/i)) {
@@ -74,11 +77,11 @@ export default class PeopleRouter {
 					...this.constructInitialsQuery(query),
 				};
 			} else {
-				const exact = await this.#elasticsearch.searchPersonByNameFuzzy(query, false);
-				const fuzzy = await this.#elasticsearch.searchPersonByNameFuzzy(query, true);
+				exactNetids = await this.#elasticsearch.searchPersonByNameFuzzy(query, false);
+				fuzzyNetids = await this.#elasticsearch.searchPersonByNameFuzzy(query, true);
 				where = {
 					...where,
-					netid: [...exact, ...fuzzy],
+					netid: [...exactNetids, ...fuzzyNetids],
 				};
 			}
 		}
@@ -96,6 +99,15 @@ export default class PeopleRouter {
 			return;
 		}
 		const json = people.map((person) => person.toSanitizedObject());
+		if(fuzzyNetids.length > 0) {
+			json.sort((a, b) => {
+				const aIsInExact = exactNetids.includes(a.netid);
+				const bIsInExact = exactNetids.includes(b.netid);
+				if(aIsInExact === bIsInExact) return 0;
+				if(aIsInExact) return -1;
+				if(bIsInExact) return 1;
+			});
+		}
 		res.status(200).json(json);
 	};
 };
