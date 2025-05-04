@@ -13,9 +13,9 @@ export default function FAQPage() {
 			</Topbar>
 			<div id={styles.faq_page} className={logoFont.className}>
 				<h1>FAQ</h1>
-				<h2>How can I remove my information from Yalies?</h2>
+				<h2>Where does my information come from?</h2>
 				<p>
-					Yalies only uses data that is already publicly available to Yale students—absolutely
+					Yalies only uses data that is already <a href="https://registrar.yale.edu/yale-university-statement-disclosure-directory-information">publicly available to Yale students</a>—absolutely
 					no protected information is revealed. NetIDs, UPIs, and emails come from the <a href="https://directory.yale.edu/">Yale Directory</a>, 
 					and everything else comes from the <a href="https://students.yale.edu/facebook/">Yale Face Book</a>.
 				</p>
@@ -27,10 +27,10 @@ export default function FAQPage() {
 				</p>
 				<h3>Removing information from the Yale Directory</h3>
 				<p>
-					Because directory information is generally public record as a matter of FERPA policy,
-					Yale does not have an interactive website that allows you to remove it.
-					If you would like your information removed, Yale recommends that you contact <a href="mailto:registrar@yale.edu">registrar@yale.edu</a> to 
-					request removal. Bear in mind this may prevent you from using some university services.
+					Directory information is generally public record as a matter of FERPA policy.
+					Yale College students may follow directions from the <a href="https://registrar.yale.edu/news/student-directory-opt-out-option">University Registrar's Office</a>
+					to have their information removed from the central directory, Yale recommends that you contact <a href="mailto:registrar@yale.edu">registrar@yale.edu</a> to 
+					request removal. Bear in mind this may prevent you from using some y/cs services.
 				</p>
 				<h2>How can I add a pronunciation for my name?</h2>
 				<p>
