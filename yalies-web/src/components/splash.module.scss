@@ -21,9 +21,6 @@
 	button {
 		margin-top: 15px;
 	}
-	a {
-		color: inherit;
-	}
 	@include shared.responsive() {
 		padding: 0 20px;
 		margin-top: 5vh;

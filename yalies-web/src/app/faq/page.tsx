@@ -29,7 +29,7 @@ export default function FAQPage() {
 				<p>
 					Directory information is generally public record as a matter of FERPA policy.
 					Yale College students may follow directions from the <a href="https://registrar.yale.edu/news/student-directory-opt-out-option">University Registrar's Office</a>
-					to have their information removed from the central directory, Yale recommends that you contact <a href="mailto:registrar@yale.edu">registrar@yale.edu</a> to 
+					&nbsp;to have their information removed from the central directory, Yale recommends that you contact <a href="mailto:registrar@yale.edu">registrar@yale.edu</a> to 
 					request removal. Bear in mind this may prevent you from using some y/cs services.
 				</p>
 				<h2>How can I add a pronunciation for my name?</h2>
