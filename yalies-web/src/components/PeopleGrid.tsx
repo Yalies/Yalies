@@ -31,7 +31,11 @@ function CollegeIcon({ collegeCode }: { collegeCode: keyof typeof COLLEGE_SHIELD
 }
 
 function LoadingIcon() {
-	return <img src="/logo.png" alt="Loading" className={styles.loading_icon} />;
+	return (
+		<div className={styles.loading_icon_container}>
+			<img src="/logo.png" alt="Loading" className={styles.loading_icon} />
+		</div>
+	);
 }
 
 export default function PeopleGrid({

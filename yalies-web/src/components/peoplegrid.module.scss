@@ -4,6 +4,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 16px;
+	justify-content: center;
     .person {
         width: 3.3in;
         display: inline-block;
@@ -65,6 +66,10 @@
 	@include shared.responsive() {
 		text-align: center;
 	}
+}
+
+.loading_icon_container {
+	width: 100%;
 }
 
 .loading_icon {
